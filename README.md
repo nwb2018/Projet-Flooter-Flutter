@@ -1,5 +1,6 @@
 # Projet-Flooter-Flutter
-Projet developpement flutterRegles de nommages des commits : #Pour créer un commit qui notifie l'ajout d'une nouvelle fonction dans le code: [ADD]message_commit
+Regles de nommages des commits : 
+#Pour créer un commit qui notifie l'ajout d'une nouvelle fonction dans le code: [ADD]message_commit
 
 #Pour créer un commit qui notifie la modification(suppression/ resolution d'anomalie) du code écrit: [FIX]message_commit
 
