@@ -1,6 +1,6 @@
 import 'package:flooter/Pages/Home.dart';
 import 'package:flutter/material.dart';
-
+ 
 
 // This is the best practice
 import 'splash_content.dart';
@@ -12,20 +12,26 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   Duration kAnimationDuration = Duration(milliseconds: 200);
-  Color kPrimaryColor = Color.fromARGB(200,0,249,93);
+  Color kPrimaryColor = Color.fromARGB(255, 96, 131, 255);
 
   int currentPage = 0;
   List<Map<String, String>> splashData = [
     {
-      "text": "Suivez votre équipe de sport amateur",
-      "text2": "Suivez votre équipe de sport amateur",
-      "image": "assets/GARK-LOGO icon + text.png"
+      "text": "Stream Football Match",
+      "text2": "Watch professional league football matches",
+      "image": "assets/1.png"
     },
     {
-      "text": "Suivez vos matchs & entrainements",
+      "text": "Realtime Statistics",
       "text2":
-          "Suivez vos matchs & entrainements",
-      "image": "assets/cal.png"
+          "Real-time football live scores and match statistics",
+      "image": "assets/2.PNG"
+    },
+    {
+      "text": "League Standings",
+      "text2":
+          "Club statistics and league standings around the world",
+      "image": "assets/3.png"
     },
 
   ];
@@ -72,51 +78,7 @@ class _BodyState extends State<Body> {
                             (index) => buildDot(index: index),
                           ),
                         ),
-                         SizedBox(
-                          height: 20,
-                        ),
-                        SizedBox(
-                          width: 250, // <-- Your width
-                          child: Container(
-                            // padding: EdgeInsets.only(top: 30),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (c) => Home()));
-                              },
-
-                              style: ElevatedButton.styleFrom(
-                                primary: Color.fromARGB(200,0,249,93),
-                              ),
-
-                              child: Text(
-                                "Créer un compte",
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Color.fromARGB(199, 255, 255, 255),
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ), //label text,
-                            ),
-                          ),
-                        ),
-                          SizedBox(
-                          height: 10,
-                        ),
-                        new GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                                MaterialPageRoute(builder: (c) => Home()));
-                          },
-                          child: new Text(
-                            "Connexion",
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Color.fromARGB(200,0,249,93),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
+                       
                       ],
                     ),
                   ),

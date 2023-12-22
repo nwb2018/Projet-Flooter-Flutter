@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        // '/': (context) => SplashScreen(),
+      //  '/': (context) => SplashScreen(),
         '/': (context) => const MyHomePage(title: 'ECLUBS'),
         '/schedule': (context) => const Schedule(),
       },
