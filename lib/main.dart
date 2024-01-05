@@ -21,9 +21,13 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
       //  '/': (context) => SplashScreen(),
-        '/': (context) => const MyHomePage(title: 'ECLUBS'),
+      //  '/': (context) => const MyHomePage(title: 'ECLUBS'),
         '/schedule': (context) => const Schedule(),
       },
+
+      //route aux leagues
+        '/': (context) => const league(title: 'LEAGUES'),
+      //fin league
     );
   }
 }
