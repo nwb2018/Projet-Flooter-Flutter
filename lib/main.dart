@@ -1,10 +1,17 @@
 import 'package:flooter/Pages/Home.dart';
+import 'package:flooter/Pages/Match_competition.dart';
 import 'package:flooter/Pages/Schedule.dart';
+import 'package:flooter/Pages/Standing_competition.dart';
 import 'package:flooter/Splash/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -20,8 +27,15 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
+<<<<<<< HEAD
       //  '/': (context) => SplashScreen(),
       //  '/': (context) => const MyHomePage(title: 'ECLUBS'),
+=======
+        //  '/': (context) => SplashScreen(),
+        // '/': (context) => const MyHomePage(title: 'ECLUBS'),
+        // '/': (context) => const MatchPage(),
+        '/': (context) => const StandingPage(),
+>>>>>>> 58a3dbdbf249ac8e5d78f97262cd6a2fe815a569
         '/schedule': (context) => const Schedule(),
       },
 
@@ -51,7 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<Widget> _screens = [
     Home(),
-    Schedule()
+    Schedule(),
+    MatchPage()
     // Add other pages here as needed
   ];
 
