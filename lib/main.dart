@@ -6,6 +6,8 @@ import 'package:flooter/Splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'Pages/testSchedule.dart';
+
 void main() {
   runApp(
     const ProviderScope(
@@ -30,8 +32,8 @@ class MyApp extends StatelessWidget {
         //  '/': (context) => SplashScreen(),
         // '/': (context) => const MyHomePage(title: 'ECLUBS'),
         // '/': (context) => const MatchPage(),
-        '/': (context) => const StandingPage(),
-        '/schedule': (context) => const Schedule(),
+        // '/': (context) => const StandingPage(),
+        '/': (context) => const Schedule(),
       },
     );
   }
