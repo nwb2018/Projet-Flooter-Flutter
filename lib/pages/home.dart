@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
         child: Padding(
           padding: EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
                 'Rechercher un club de foot',
@@ -31,8 +31,67 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+      bottomNavigationBar: navbar,
     );
   }
+}
+
+Widget get navbar {
+  return ClipRRect(
+    borderRadius: const BorderRadius.only(
+      topRight: Radius.circular(30),
+      topLeft: Radius.circular(30),
+    ),
+    child: BottomNavigationBar(
+      //onTap: _itemTapped,
+      type: BottomNavigationBarType.fixed,
+      //currentIndex: selectedIndex,
+      showUnselectedLabels: false,
+      showSelectedLabels: true,
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      unselectedItemColor: const Color.fromARGB(255, 192, 192, 192),
+      selectedItemColor: const Color.fromARGB(255, 96, 131, 255),
+      iconSize: 20,
+      selectedLabelStyle: const TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w900,
+        fontFamily: "Poppins",
+        letterSpacing: 0.5,
+      ),
+      items: const [
+        BottomNavigationBarItem(
+          icon: Padding(
+            padding: EdgeInsets.all(2.0),
+            child: Icon(
+              Icons.home,
+              size: 25,
+            ),
+          ),
+          label: "Home",
+        ),
+        BottomNavigationBarItem(
+          icon: Padding(
+            padding: EdgeInsets.all(2.0),
+            child: Icon(
+              Icons.date_range,
+              size: 25,
+            ),
+          ),
+          label: "Schedule",
+        ),
+        BottomNavigationBarItem(
+          icon: Padding(
+            padding: EdgeInsets.all(2.0),
+            child: Icon(
+              Icons.star_border,
+              size: 25,
+            ),
+          ),
+          label: "Favoris",
+        ),
+      ],
+    ),
+  );
 }
 
 class SearchBar extends StatelessWidget {
