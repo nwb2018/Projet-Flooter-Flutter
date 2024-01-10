@@ -11,13 +11,39 @@ class LeaguePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 26,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('LEAGUE'),
+          title: SizedBox(
+            child: Row(
+              children: [
+                Column(
+                  children: [
+                    const Text('Logo'),
+                  ],
+                ),
+                SizedBox(width: 20),
+                Column(
+                  children: [
+                    //const Text('LEAGUE'),
+                    Row(
+                      children: [const Text('LEAGUE', style: TextStyle(fontWeight: FontWeight.bold)),],
+                    ),
+                    Row(
+                      children: [const Text('England',style: TextStyle(fontSize: 15),),],
+                    ),
+                    Row(
+                      children: [const Text('2021/2022', style: TextStyle(fontSize: 10),)],
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
         body: Column(
           children: [
+            Divider(height: 2,), // Séparateur (bar)
             const TabBar(
                 tabs: [
                   Tab(text: 'OverView',),
@@ -32,7 +58,7 @@ class LeaguePage extends StatelessWidget {
                 text: 'Hello', // default text style
                 children: <TextSpan>[
                   TextSpan(text: ' beautiful ', style: TextStyle(fontStyle: FontStyle.italic)),
-                  TextSpan(text: 'world', style: TextStyle(fontWeight: FontWeight.bold)),
+                  TextSpan(text: 'world', style: TextStyle(fontWeight: FontWeight.bold,),),
                 ],
               ),
             ),

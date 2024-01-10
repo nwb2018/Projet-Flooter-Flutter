@@ -32,15 +32,14 @@ class MyApp extends StatelessWidget {
         //  '/': (context) => SplashScreen(),
         // '/': (context) => const MyHomePage(title: 'ECLUBS'),
         // '/': (context) => const MatchPage(),
-        '/': (context) => const StandingPage(),
-
+        //'/': (context) => const StandingPage(),
+        '/': (context) => const LeaguePage(),
 
         '/schedule': (context) => const Schedule(),
       },
 
       //route aux leagues
        // '/': (context) => const league(title: 'LEAGUES'),
-      //'/': (context) => const LeaguePage(),
       //fin league
     );
   }
