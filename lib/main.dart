@@ -1,4 +1,4 @@
-import 'package:flooter/pages/home.dart';
+import 'package:flooter/pages/Home.dart';
 import 'package:flooter/Pages/Match_competition.dart';
 import 'package:flooter/Pages/Schedule.dart';
 import 'package:flooter/Pages/Standing_competition.dart';
@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
         //  '/': (context) => SplashScreen(),
         '/': (context) => const HomePage(),
         // '/': (context) => const MatchPage(),
+        // '/': (context) => const FavoritePage(),
         //'/': (context) => const StandingPage(),
         '/schedule': (context) => const Schedule(),
       },

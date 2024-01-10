@@ -1,65 +1,144 @@
-import 'package:flooter/models/competition_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flooter/models/match_model.dart';
-import 'package:flooter/Services/api_service.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  _HomeState createState() => _HomeState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomeState extends State<Home> {
-  late List<CompetitionModel>? _userModel = [];
-  @override
-  void initState() {
-    super.initState();
-    _getData();
-  }
-
-  void _getData() async {
-    _userModel = (await ApiService().getCompetitions())!;
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
-  }
-
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('REST API Example'),
+        title: const Text('Flooter'),
+        centerTitle: true,
       ),
-      body: _userModel == null || _userModel!.isEmpty
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : ListView.builder(
-              itemCount: _userModel!.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(_userModel![index].name.toString()),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(_userModel![index].code.toString()),
-                          Text(_userModel![index].emblem.toString()),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
+      body: const Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                'Rechercher un club de foot',
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(height: 20),
+              SearchBar(),
+              Padding(padding: EdgeInsets.all(30.0), child: MyCard()),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: navbar,
+    );
+  }
+}
+
+Widget get navbar {
+  return ClipRRect(
+    borderRadius: const BorderRadius.only(
+      topRight: Radius.circular(30),
+      topLeft: Radius.circular(30),
+    ),
+    child: BottomNavigationBar(
+      //onTap: _itemTapped,
+      type: BottomNavigationBarType.fixed,
+      //currentIndex: selectedIndex,
+      showUnselectedLabels: false,
+      showSelectedLabels: true,
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      unselectedItemColor: const Color.fromARGB(255, 192, 192, 192),
+      selectedItemColor: const Color.fromARGB(255, 96, 131, 255),
+      iconSize: 20,
+      selectedLabelStyle: const TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w900,
+        fontFamily: "Poppins",
+        letterSpacing: 0.5,
+      ),
+      items: const [
+        BottomNavigationBarItem(
+          icon: Padding(
+            padding: EdgeInsets.all(2.0),
+            child: Icon(
+              Icons.home,
+              size: 25,
             ),
+          ),
+          label: "Home",
+        ),
+        BottomNavigationBarItem(
+          icon: Padding(
+            padding: EdgeInsets.all(2.0),
+            child: Icon(
+              Icons.date_range,
+              size: 25,
+            ),
+          ),
+          label: "Schedule",
+        ),
+        BottomNavigationBarItem(
+          icon: Padding(
+            padding: EdgeInsets.all(2.0),
+            child: Icon(
+              Icons.star_border,
+              size: 25,
+            ),
+          ),
+          label: "Favoris",
+        ),
+      ],
+    ),
+  );
+}
+
+class SearchBar extends StatelessWidget {
+  const SearchBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: sized_box_for_whitespace
+    return Container(
+      width: 300,
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: 'Rechercher...',
+          prefixIcon: const Icon(Icons.search),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MyCard extends StatelessWidget {
+  const MyCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Column(
+        children: [
+          Image.network(
+            'URL_de_votre_image',
+            width: 300,
+            height: 200,
+            fit: BoxFit.cover,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Votre texte ici',
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

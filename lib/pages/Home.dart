@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 20),
               SearchBar(),
+              Padding(padding: EdgeInsets.all(30.0), child: MyCard()),
             ],
           ),
         ),
@@ -110,6 +111,33 @@ class SearchBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class MyCard extends StatelessWidget {
+  const MyCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Column(
+        children: [
+          Image.network(
+            'URL_de_votre_image',
+            width: 300,
+            height: 200,
+            fit: BoxFit.cover,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Votre texte ici',
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+        ],
       ),
     );
   }
