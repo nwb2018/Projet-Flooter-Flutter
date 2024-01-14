@@ -28,9 +28,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         //  '/': (context) => SplashScreen(),
-        // '/': (context) => const MyHomePage(title: 'ECLUBS'),
-        // '/': (context) => const MatchPage(),
-        '/': (context) => const StandingPage(),
+          // '/': (context) => const MyHomePage(title: 'ECLUBS'),
+           '/': (context) => const MatchPage(),
+        // '/': (context) => const StandingPage(),
         '/schedule': (context) => const Schedule(),
       },
     );

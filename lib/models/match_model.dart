@@ -7,47 +7,45 @@ import 'team_model.dart';
 List<Match> matchesFromJson(String str) {
   final jsonData = json.decode(str);
   final List<dynamic> matchesJson = jsonData["matches"];
-
+  //  print(matchesJson);
   return matchesJson.map((json) => Match.fromJson(json)).toList();
 }
 
 class Match {
-  final Map<String, dynamic> area;
-  final CompetitionModel competition;
-  final Map<String, dynamic> season;
-  final int id;
-  final String utcDate;
-  final String status;
-  final String minute;
-  final Score score;
-  final Team homeTeam;
-  final Team awayTeam;
+  int id;
+  String utcDate;
+  String status;
+  int matchday;
+  String stage;
+  Score score;
+  Team homeTeam;
+  Team awayTeam;
+  CompetitionModel competition; // Add this line
 
   Match({
-    required this.area,
-    required this.competition,
-    required this.season,
     required this.id,
     required this.utcDate,
     required this.status,
-    required this.minute,
+    required this.matchday,
+    required this.stage,
+    required this.score,
     required this.homeTeam,
     required this.awayTeam,
-    required this.score,
+    required this.competition, // Add this line
   });
 
   factory Match.fromJson(Map<String, dynamic> json) {
     return Match(
-      area: json['area'] ?? {},
-      competition: CompetitionModel.fromJson(json['competition'] ?? {}),
-      season: json['season'] ?? {},
-      id: json['id'] ?? 0,
-      utcDate: json['utcDate'] ?? "",
-      status: json['status'] ?? "",
-      minute: json['minute'] ?? "",
-      score: Score.fromJson(json['score'] ?? {}),
-      homeTeam: Team.fromJson(json['homeTeam'] ?? {}),
-      awayTeam: Team.fromJson(json['awayTeam'] ?? {}),
+      id: json['id'],
+      utcDate: json['utcDate'],
+      status: json['status'],
+      matchday: json['matchday'],
+      stage: json['stage'],
+      score: Score.fromJson(json['score']),
+      homeTeam: Team.fromJson(json['homeTeam']),
+      awayTeam: Team.fromJson(json['awayTeam']),
+      competition:
+          CompetitionModel.fromJson(json['competition']), // Add this line
     );
   }
 }

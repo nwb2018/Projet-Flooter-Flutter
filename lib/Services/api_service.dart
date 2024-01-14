@@ -21,33 +21,38 @@ class ApiService {
       log(e.toString());
     }
   }
+Future<List<Match>?> getMatches({List<String>? competitionIds, String? dateFrom, String? dateTo}) async {
+  try {
+    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.matchEndpoint);
 
-  Future<List<Match>?> getCompetitionMatches(
-      String competitionCode, int matchday) async {
-    try {
-      var url = Uri.parse(
-          '${ApiConstants.baseUrl}/competitions/$competitionCode/matches?matchday=$matchday');
-      var headers = {'X-Auth-Token': ApiConstants.apiKey};
+    // Define filters based on provided parameters
+    var filters = <String, dynamic>{};
+    if (competitionIds != null) filters['competitions'] = competitionIds.join(',');
+    if (dateFrom != null) filters['dateFrom'] = dateFrom;
+    if (dateTo != null) filters['dateTo'] = dateTo;
 
-      var response = await http.get(url, headers: headers);
-
-      print("response.statusCode: ${response.statusCode}");
-
-      if (response.statusCode == 200) {
-        print("response.body: ${response.body}");
-        List<Match> _matches = matchesFromJson(response.body);
-        return _matches;
-      } else {
-        print("API Error: ${response.reasonPhrase ?? 'Unknown Reason'}");
-        // Return an empty list or handle the error in another way based on your requirements.
-        return [];
-      }
-    } catch (e) {
-      log(e.toString());
-      // Handle other exceptions as needed.
-      return null;
+    // Append filters to the URL
+    if (filters.isNotEmpty) {
+      url = url.replace(queryParameters: filters);
     }
+
+    var headers = {'X-Auth-Token': ApiConstants.apiKey};
+
+    var response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      List<Match> _matches = matchesFromJson(response.body);
+      return _matches;
+    } else {
+      print("API Error: ${response.reasonPhrase ?? 'Unknown Reason'}");
+      return [];
+    }
+  } catch (e) {
+    log(e.toString());
+    return null;
   }
+}
+
 
   Future<List<TableItem>> getCompetitionStandings(
       String competitionCode) async {
