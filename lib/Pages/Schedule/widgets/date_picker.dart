@@ -37,15 +37,9 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
             )
           ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            IconButton(
+        child: IconButton(
               onPressed: () => _selectDate(context),
               icon: const Icon(Icons.calendar_today_outlined),
-            ),
-          ],
         ),
       ),
     );
