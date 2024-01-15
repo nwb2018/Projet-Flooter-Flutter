@@ -19,7 +19,9 @@ class CustomDate extends StatelessWidget {
           child: Container(
             height: 72,
             decoration: ShapeDecoration(
-              color: customDay.selected ? const Color(0xFF3766CF) : const Color(0xFFF1F1F1),
+              color: customDay.selected
+                ? const Color(0xFF3766CF)
+                : const Color(0xFFF1F1F1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100),
               ),
@@ -30,7 +32,9 @@ class CustomDate extends StatelessWidget {
                 Text(
                   _getDayOfWeek(customDay.date),
                   style: TextStyle(
-                    color: customDay.selected ? Colors.white : const Color(0xFF939598),
+                    color: customDay.selected
+                      ? Colors.white
+                      : const Color(0xFF939598),
                     fontSize: 14,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w400,

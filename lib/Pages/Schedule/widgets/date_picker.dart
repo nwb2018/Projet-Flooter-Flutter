@@ -49,8 +49,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: _chosenDay,
-      firstDate: DateTime.now().toLocal().subtract(const Duration(days: 60)),
-      lastDate: DateTime.now().toLocal(),
+      firstDate: DateTime.now().toLocal().subtract(const Duration(days: 182)),
+      lastDate: DateTime.now().toLocal().add(const Duration(days: 30)),
     );
 
     if (pickedDate != null && pickedDate != _chosenDay) {

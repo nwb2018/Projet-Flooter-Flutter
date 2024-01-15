@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 
-class MySearchBar extends StatelessWidget {
-  const MySearchBar({super.key});
+class MySearchBar extends StatefulWidget {
+  const MySearchBar({super.key, required this.onSearchChange});
+  final Function onSearchChange;
 
+  @override
+  State<MySearchBar> createState() => _MySearchBarState();
+}
+
+class _MySearchBarState extends State<MySearchBar> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -20,16 +26,19 @@ class MySearchBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(100),
           ),
         ),
-        child: const TextField(
+        child: TextField(
+          onChanged:(value) {
+              widget.onSearchChange(value.length>2? value : '');
+          },
           maxLength: 20, // Set the maximum number of characters
           //maxLines: 1,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             icon: Icon(
               Icons.manage_search,
               size: 20,
               color: Color(0xFF939598),
             ),
-            hintText: 'Search',
+            hintText: 'Search competition',
             hintStyle: TextStyle(
               color: Color(0xFF939598),
               fontSize: 16,
@@ -44,5 +53,4 @@ class MySearchBar extends StatelessWidget {
       ),
     );
   }
-
 }

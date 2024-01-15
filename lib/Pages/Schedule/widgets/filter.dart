@@ -47,7 +47,7 @@ class _MyFilterState extends State<MyFilter> {
                 child: Icon(
                   Icons.filter_alt_outlined,
                   size: 20,
-                  color: isHovered ? Colors.blue : Color(0xFF34363D),
+                  color: isHovered ? Colors.blue : const Color(0xFF34363D),
                 ),
               ),
               const SizedBox(
@@ -56,7 +56,7 @@ class _MyFilterState extends State<MyFilter> {
               Text(
                 'Filter',
                 style: TextStyle(
-                  color: isHovered ? Colors.blue : Color(0xFF34363D),
+                  color: isHovered ? Colors.blue : const Color(0xFF34363D),
                   fontSize: 14,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w500,

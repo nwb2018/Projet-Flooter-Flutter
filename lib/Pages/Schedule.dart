@@ -1,7 +1,8 @@
+import 'package:flooter/Pages/Schedule/widgets/competition_card.dart';
 import 'package:flooter/Pages/Schedule/widgets/filter.dart';
-import 'package:flooter/Pages/Schedule/widgets/league_tile.dart';
-import 'package:flooter/Pages/Schedule/widgets/match_tile.dart';
 import 'package:flooter/Pages/Schedule/widgets/search_bar.dart';
+import 'package:flooter/Services/api_service.dart';
+import 'package:flooter/models/match_model.dart';
 import 'package:flutter/material.dart';
 
 import 'Schedule/Widgets/date_picker.dart';
@@ -16,9 +17,12 @@ class Schedule extends StatefulWidget {
 }
 
 class _ScheduleState extends State<Schedule> {
-  DateTime? _chosenDay;
+  final List<String> _competitionIds = ['2015', '2021', '2019', '2017'];
+  DateTime? _chosenDay, _medianDay;
   List<CustomDay> _dayRange = [];
   String? selectedFilter;
+  List<Match>? _matches = [];
+  String _searchText = '';
 
   List<CustomDay> _selectedDays(DateTime chosenDay) {
     List<CustomDay> days = [];
@@ -40,12 +44,53 @@ class _ScheduleState extends State<Schedule> {
     }
   }
 
+  String formatDateTime(DateTime dateTime) {
+    String year = dateTime.year.toString().padLeft(4, '0');
+    String month = dateTime.month.toString().padLeft(2, '0');
+    String day = dateTime.day.toString().padLeft(2, '0');
+    return '$year-$month-$day';
+  }
+
+  List<Match>? filteredMatches(DateTime? day, String competitionId) {
+    List<Match>? filteredList = _matches!.where((match) {
+      // Compare dates based on year, month, and day
+      DateTime matchDate = DateTime.parse(match.utcDate);
+      bool isSameDate = matchDate.year == day?.year &&
+          matchDate.month == day!.month &&
+          matchDate.day == day.day;
+
+      // Check if the competitionId matches
+      bool isSameCompetition = match.competition.id == int.parse(competitionId);
+
+      if(_searchText.isNotEmpty){
+        bool inCompetition = match.competition.name.toUpperCase().contains(_searchText.toUpperCase());
+        return inCompetition && isSameCompetition && isSameDate;
+      }
+
+      return isSameDate && isSameCompetition;
+    }).toList();
+
+    return filteredList.isNotEmpty? filteredList :  null;
+  }
+
+
+  void _getData(DateTime from, DateTime to) async {
+    _matches = await ApiService().getMatches(
+      competitionIds: _competitionIds,
+      dateFrom: formatDateTime(from),
+      dateTo: formatDateTime(to)
+    );
+    setState(() {});
+    // print("Getting match list");
+  }
+
   @override
   void initState() {
     _chosenDay = DateTime.now().toLocal();
+    _medianDay = _chosenDay;
     _dayRange = _selectedDays(_chosenDay!);
+    _getData(_chosenDay!.subtract(const Duration(days: 5)), _chosenDay!.add(const Duration(days: 5)));
     super.initState();
-    // print("Initialised");
   }
 
   @override
@@ -71,68 +116,58 @@ class _ScheduleState extends State<Schedule> {
               children: [
                 for (int index = 0; index < _dayRange.length; index++)
                   CustomDate(
-                      customDay: _dayRange[index!],
+                      customDay: _dayRange[index],
                       onTap: (chosenDay) {
                         setState(() {
+                          if(chosenDay.isBefore(_medianDay!.subtract(const Duration(days: 5))) || chosenDay.isAfter(_medianDay!.add(const Duration(days: 4)))) {
+                            _getData(chosenDay.subtract(const Duration(days: 5)), chosenDay.add(const Duration(days: 5)));
+                            _medianDay = chosenDay;
+                          }
                           _toggleSelectedDay(chosenDay);
+                          _chosenDay = chosenDay;
                         });
                       }),
                 CustomDatePicker(updateRange: (newDate) {
                   setState(() {
+                    if(newDate.isBefore(_medianDay!.subtract(const Duration(days: 5))) || newDate.isAfter(_medianDay!.add(const Duration(days: 4)))) {
+                      _getData(newDate.subtract(const Duration(days: 5)), newDate.add(const Duration(days: 5)));
+                      _medianDay = newDate;
+                    }
                     _chosenDay = newDate;
                     _dayRange = _selectedDays(newDate);
                   });
                 }),
             ]),
             const SizedBox(height: 16,),
-            const Row(
+            Row(
               children: [
-                MySearchBar(),
-                SizedBox(width: 8,),
-                MyFilter(),
+                MySearchBar(
+                  onSearchChange: (String value){
+                    setState(() {
+                      _searchText = value;
+                    });
+                  },
+                ),
+                const SizedBox(width: 8,),
+                const MyFilter(),
               ],
             ),
-            const SizedBox(height: 8,),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        clipBehavior: Clip.antiAlias,
-                        decoration: tileContainerDecoration(),
-                        child: Column(
-                          children: [
-                            LeagueTile(),
-                            MatchTile(),
-                            MatchTile()
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8,),
-              ],
-            )
-
+            const SizedBox(height: 12,),
+            Expanded(
+              child: _matches == null || _matches!.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                  itemCount: _competitionIds.length,
+                  itemBuilder: (context, index) {
+                      /* return filteredMatches(_chosenDay, _competitionIds[index]) != null
+                       ? CompetitionCard(matches: filteredMatches(_chosenDay, _competitionIds[index]))
+                       : null; */
+                    return CompetitionCard(matches: filteredMatches(_chosenDay, _competitionIds[index]));
+                  }
+              ),
+            ),
           ]),
         ));
   }
 
-  ShapeDecoration tileContainerDecoration() {
-    return ShapeDecoration(
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        side: const BorderSide(
-          width: 1.5,
-          strokeAlign: BorderSide.strokeAlignOutside,
-          color: Color(0xFFF1F1F1),
-        ),
-        borderRadius: BorderRadius.circular(4),
-      ),
-    );
-  }
 }
