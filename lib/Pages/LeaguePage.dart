@@ -14,42 +14,48 @@ class LeaguePage extends StatelessWidget {
       length: 26,
       child: Scaffold(
         appBar: AppBar(
-          title: SizedBox(
-            child: Row(
-              children: [
-                Column(
-                  children: [
-                    const Text('Logo'),
-                  ],
-                ),
-                SizedBox(width: 20),
-                Column(
-                  children: [
-                    //const Text('LEAGUE'),
-                    Row(
-                      children: [const Text('LEAGUE', style: TextStyle(fontWeight: FontWeight.bold)),],
-                    ),
-                    Row(
-                      children: [const Text('England',style: TextStyle(fontSize: 15),),],
-                    ),
-                    Row(
-                      children: [const Text('2021/2022', style: TextStyle(fontSize: 10),)],
-                    )
-                  ],
-                ),
-              ],
+          title: const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: SizedBox(
+              child: Row(
+                children: [
+                  Column(
+                    children: [
+                      Text('Logo'),
+                    ],
+                  ),
+                  SizedBox(width: 20),
+                  Column(
+                    children: [
+                      //const Text('LEAGUE'),
+                      Row(
+                        children: [Text('LEAGUE', style: TextStyle(fontWeight: FontWeight.bold)),],
+                      ),
+                      Row(
+                        children: [Text('England',style: TextStyle(fontSize: 15),),],
+                      ),
+                      Row(
+                        children: [Text('2021/2022', style: TextStyle(fontSize: 10),)],
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
         body: Column(
           children: [
-            Divider(height: 2,), // Séparateur (bar)
-            const TabBar(
-                tabs: [
-                  Tab(text: 'OverView',),
-                  Tab(text: 'Matches',),
-                  Tab(text: 'Stansdings',)
-                ]
+            const Divider(height: 25,), // Séparateur bas du logo (bar)
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: TabBar(
+                  tabs: [
+                    Tab(text: 'OverView',),
+                    Tab(text: 'Matches',),
+                    Tab(text: 'Stansdings',)
+                  ]
+              ),
             ),
 
             //week 31
@@ -72,10 +78,10 @@ class LeaguePage extends StatelessWidget {
                     overView(),
 
                     //matches
-                    matches(),
+                    const matches(),
 
                     //standings
-                    standings(),
+                    const standings(),
                   ]
               ),
             )
