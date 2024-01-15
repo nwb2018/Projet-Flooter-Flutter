@@ -1,143 +1,229 @@
 import 'package:flutter/material.dart';
+import 'package:flooter/Services/api_service.dart';
+import 'package:flooter/models/competition_model.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  List<Map<String, String>> staticNews = [
+    {
+      'news': 'Manchester United \'extremely close\' to signing Darwin Nunez',
+      'imageUrl':
+          'https://th.bing.com/th/id/R.786987a667c6e5c5aeddc855795dce3d?rik=dkU8%2bXDlmVtANw&pid=ImgRaw&r=0',
+    },
+    {
+      'news': 'Barcelona set to announce new head coach next week',
+      'imageUrl':
+          'https://th.bing.com/th/id/R.786987a667c6e5c5aeddc855795dce3d?rik=dkU8%2bXDlmVtANw&pid=ImgRaw&r=0',
+    },
+    {
+      'news': 'Premier League announces new TV rights deal for upcoming season',
+      'imageUrl':
+          'https://th.bing.com/th/id/R.786987a667c6e5c5aeddc855795dce3d?rik=dkU8%2bXDlmVtANw&pid=ImgRaw&r=0',
+    },
+  ];
+
+  late List<Map<String, String>> _featuredNews = [];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      _loadFeaturedNews();
+    });
+  }
+
+  void _loadFeaturedNews() {
+    setState(() {
+      _featuredNews = List.from(staticNews);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flooter'),
-        centerTitle: true,
-      ),
-      body: const Center(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
+      appBar: AppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Figma Flutter Generator WhatsonyourmindWidget - TEXT
               Text(
-                'Rechercher un club de foot',
-                style: TextStyle(fontSize: 20),
+                'What’s on your mind?',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  color: Color.fromRGBO(35, 38, 45, 1),
+                  fontFamily: 'Inter',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  height: 1.5,
+                ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               SearchBar(),
-              Padding(padding: EdgeInsets.all(30.0), child: MyCard()),
+              SizedBox(height: 20),
+              Text(
+                'League',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  color: Color.fromRGBO(35, 38, 45, 1),
+                  fontFamily: 'Inter',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  height: 1.5,
+                ),
+              ),
+              SizedBox(height: 10),
+              // Your LeagueCard implementation here
+              SizedBox(height: 20),
+              Text(
+                'Featured news',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  color: Color.fromRGBO(35, 38, 45, 1),
+                  fontFamily: 'Inter',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  height: 1.5,
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                child: Column(
+                  children: _featuredNews
+                      .map((news) => FeaturedNewsCard(
+                            news: news['news']!,
+                            imageUrl: news['imageUrl']!,
+                          ))
+                      .toList(),
+                ),
+              ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: navbar,
     );
   }
-}
-
-Widget get navbar {
-  return ClipRRect(
-    borderRadius: const BorderRadius.only(
-      topRight: Radius.circular(30),
-      topLeft: Radius.circular(30),
-    ),
-    child: BottomNavigationBar(
-      //onTap: _itemTapped,
-      type: BottomNavigationBarType.fixed,
-      //currentIndex: selectedIndex,
-      showUnselectedLabels: false,
-      showSelectedLabels: true,
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      unselectedItemColor: const Color.fromARGB(255, 192, 192, 192),
-      selectedItemColor: const Color.fromARGB(255, 96, 131, 255),
-      iconSize: 20,
-      selectedLabelStyle: const TextStyle(
-        fontSize: 11,
-        fontWeight: FontWeight.w900,
-        fontFamily: "Poppins",
-        letterSpacing: 0.5,
-      ),
-      items: const [
-        BottomNavigationBarItem(
-          icon: Padding(
-            padding: EdgeInsets.all(2.0),
-            child: Icon(
-              Icons.home,
-              size: 25,
-            ),
-          ),
-          label: "Home",
-        ),
-        BottomNavigationBarItem(
-          icon: Padding(
-            padding: EdgeInsets.all(2.0),
-            child: Icon(
-              Icons.date_range,
-              size: 25,
-            ),
-          ),
-          label: "Schedule",
-        ),
-        BottomNavigationBarItem(
-          icon: Padding(
-            padding: EdgeInsets.all(2.0),
-            child: Icon(
-              Icons.star_border,
-              size: 25,
-            ),
-          ),
-          label: "Favoris",
-        ),
-      ],
-    ),
-  );
 }
 
 class SearchBar extends StatelessWidget {
-  const SearchBar({super.key});
+  const SearchBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // ignore: sized_box_for_whitespace
     return Container(
-      width: 300,
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'Rechercher...',
-          prefixIcon: const Icon(Icons.search),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: const Color.fromRGBO(241, 241, 241, 1),
+        border: Border.all(
+          color: const Color.fromRGBO(219, 220, 221, 1),
+          width: 1,
         ),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          const Icon(
+            Icons.search,
+            color: Color.fromRGBO(147, 149, 152, 1),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: TextField(
+              style: TextStyle(
+                color: Color.fromRGBO(147, 149, 152, 1),
+                fontFamily: 'Inter',
+                fontSize: 14,
+                letterSpacing: 0,
+                fontWeight: FontWeight.normal,
+                height: 1.5,
+              ),
+              decoration: const InputDecoration(
+                hintText: 'Search matches, player, club and news',
+                hintStyle: TextStyle(
+                  color: Color.fromRGBO(147, 149, 152, 1),
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  letterSpacing: 0,
+                  fontWeight: FontWeight.normal,
+                  height: 1.5,
+                ),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class MyCard extends StatelessWidget {
-  const MyCard({super.key});
+class FeaturedNewsCard extends StatelessWidget {
+  final String news;
+  final String imageUrl;
+
+  const FeaturedNewsCard({
+    Key? key,
+    required this.news,
+    required this.imageUrl,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Column(
-        children: [
-          Image.network(
-            'URL_de_votre_image',
-            width: 300,
-            height: 200,
-            fit: BoxFit.cover,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Votre texte ici',
-              style: TextStyle(fontSize: 18),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(6),
+        side: BorderSide(color: Color.fromRGBO(255, 255, 255, 1)),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromRGBO(0, 0, 0, 0.08),
+              offset: Offset(0, 2),
+              blurRadius: 8,
             ),
-          ),
-        ],
+          ],
+          color: Color.fromRGBO(255, 255, 255, 1),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              height: 100,
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.fill,
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+              child: Text(
+                news,
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  color: Color.fromRGBO(35, 38, 45, 1),
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  letterSpacing: 0,
+                  fontWeight: FontWeight.normal,
+                  height: 1.5,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
