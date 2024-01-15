@@ -53,7 +53,7 @@ class LeaguePage extends StatelessWidget {
                   tabs: [
                     Tab(text: 'OverView',),
                     Tab(text: 'Matches',),
-                    Tab(text: 'Stansdings',)
+                    Tab(text: 'Standings',)
                   ]
               ),
             ),
@@ -78,10 +78,10 @@ class LeaguePage extends StatelessWidget {
                     overView(),
 
                     //matches
-                    const matches(),
+                    matches(),
 
                     //standings
-                    const standings(),
+                    standings(),
                   ]
               ),
             )
