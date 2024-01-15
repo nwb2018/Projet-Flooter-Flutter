@@ -14,6 +14,7 @@ List<Match> matchesFromJson(String str) {
 class Match {
   int id;
   String utcDate;
+  String area;
   String status;
   int matchday;
   String stage;
@@ -25,6 +26,7 @@ class Match {
   Match({
     required this.id,
     required this.utcDate,
+    required this.area,
     required this.status,
     required this.matchday,
     required this.stage,
@@ -38,6 +40,7 @@ class Match {
     return Match(
       id: json['id'],
       utcDate: json['utcDate'],
+      area: json['area']['name'],
       status: json['status'],
       matchday: json['matchday'],
       stage: json['stage'],
