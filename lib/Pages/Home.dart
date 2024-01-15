@@ -10,6 +10,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late List<CompetitionModel> _competitions = [];
   List<Map<String, String>> staticNews = [
     {
       'news': 'Manchester United \'extremely close\' to signing Darwin Nunez',
@@ -33,8 +34,15 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      _loadFeaturedNews();
+    _getData();
+    _loadFeaturedNews();
+  }
+
+  void _getData() async {
+    final List<CompetitionModel> competitions =
+        (await ApiService().getCompetitions())!;
+    setState(() {
+      _competitions = competitions;
     });
   }
 
@@ -54,7 +62,6 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Figma Flutter Generator WhatsonyourmindWidget - TEXT
               Text(
                 'What’s on your mind?',
                 textAlign: TextAlign.left,
@@ -70,7 +77,7 @@ class _HomePageState extends State<HomePage> {
               SearchBar(),
               SizedBox(height: 20),
               Text(
-                'League',
+                'Leagues',
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   color: Color.fromRGBO(35, 38, 45, 1),
@@ -81,7 +88,30 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               SizedBox(height: 10),
-              // Your LeagueCard implementation here
+              Container(
+                height: 180,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _competitions
+                      .where((comp) => comp.emblem.isNotEmpty)
+                      .length,
+                  itemBuilder: (context, index) {
+                    final filteredCompetitions = _competitions
+                        .where((comp) => comp.emblem.isNotEmpty)
+                        .toList();
+                    return Container(
+                      width: 200,
+                      height: 30,
+                      margin: EdgeInsets.symmetric(horizontal: 8),
+                      child: LeagueCard(
+                        competition: filteredCompetitions[index],
+                        cardWidth: 170,
+                        cardHeight: 10,
+                      ),
+                    );
+                  },
+                ),
+              ),
               SizedBox(height: 20),
               Text(
                 'Featured news',
@@ -107,6 +137,43 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class LeagueCard extends StatelessWidget {
+  final CompetitionModel competition;
+  final double cardWidth;
+  final double cardHeight;
+
+  const LeagueCard({
+    required this.competition,
+    required this.cardWidth,
+    required this.cardHeight,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (competition.emblem.isEmpty) {
+      return SizedBox.shrink();
+    }
+
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(color: Colors.white),
+      ),
+      child: Container(
+        color: Colors.white,
+        width: cardWidth,
+        height: cardHeight,
+        child: Image.network(
+          competition.emblem,
+          fit: BoxFit.contain,
         ),
       ),
     );
