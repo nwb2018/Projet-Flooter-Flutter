@@ -15,45 +15,48 @@ class ApiService {
       var response = await http.get(url);
       if (response.statusCode == 200) {
         List<CompetitionModel> _model = competitionModelFromJson(response.body);
+        print("_model");
+        print(_model);
         return _model;
       }
     } catch (e) {
       log(e.toString());
     }
   }
-Future<List<Match>?> getMatches({List<String>? competitionIds, String? dateFrom, String? dateTo}) async {
-  try {
-    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.matchEndpoint);
 
-    // Define filters based on provided parameters
-    var filters = <String, dynamic>{};
-    if (competitionIds != null) filters['competitions'] = competitionIds.join(',');
-    if (dateFrom != null) filters['dateFrom'] = dateFrom;
-    if (dateTo != null) filters['dateTo'] = dateTo;
+  Future<List<Match>?> getMatches(
+      {List<String>? competitionIds, String? dateFrom, String? dateTo}) async {
+    try {
+      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.matchEndpoint);
 
-    // Append filters to the URL
-    if (filters.isNotEmpty) {
-      url = url.replace(queryParameters: filters);
+      // Define filters based on provided parameters
+      var filters = <String, dynamic>{};
+      if (competitionIds != null)
+        filters['competitions'] = competitionIds.join(',');
+      if (dateFrom != null) filters['dateFrom'] = dateFrom;
+      if (dateTo != null) filters['dateTo'] = dateTo;
+
+      // Append filters to the URL
+      if (filters.isNotEmpty) {
+        url = url.replace(queryParameters: filters);
+      }
+
+      var headers = {'X-Auth-Token': ApiConstants.apiKey};
+
+      var response = await http.get(url, headers: headers);
+
+      if (response.statusCode == 200) {
+        List<Match> _matches = matchesFromJson(response.body);
+        return _matches;
+      } else {
+        print("API Error: ${response.reasonPhrase ?? 'Unknown Reason'}");
+        return [];
+      }
+    } catch (e) {
+      log(e.toString());
+      return null;
     }
-
-    var headers = {'X-Auth-Token': ApiConstants.apiKey};
-
-    var response = await http.get(url, headers: headers);
-
-    if (response.statusCode == 200) {
-      print(response.body);
-      List<Match> _matches = matchesFromJson(response.body);
-      return _matches;
-    } else {
-      print("API Error: ${response.reasonPhrase ?? 'Unknown Reason'}");
-      return [];
-    }
-  } catch (e) {
-    log(e.toString());
-    return null;
   }
-}
-
 
   Future<List<TableItem>> getCompetitionStandings(
       String competitionCode) async {

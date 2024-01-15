@@ -88,7 +88,7 @@ class _LeagueTileState extends State<LeagueTile> {
                             height: 20,
                             width: 20,
                             child: Icon(
-                              isExpanded ? Icons.arrow_drop_up_outlined : Icons.arrow_drop_down_outlined,
+                              !isExpanded ? Icons.arrow_drop_up_outlined : Icons.arrow_drop_down_outlined,
                               color: isHovered ? Colors.blue : const Color(0xFF34363D),
                             ),
                           )

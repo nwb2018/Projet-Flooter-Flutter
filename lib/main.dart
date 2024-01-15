@@ -3,10 +3,9 @@ import 'package:flooter/Pages/Match_competition.dart';
 import 'package:flooter/Pages/Schedule.dart';
 import 'package:flooter/Pages/Standing_competition.dart';
 import 'package:flooter/Splash/splash_screen.dart';
+import 'package:flooter/pages/Favoris.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'Pages/testSchedule.dart';
 
 void main() {
   runApp(
@@ -30,10 +29,12 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         //  '/': (context) => SplashScreen(),
-        // '/': (context) => const MyHomePage(title: 'ECLUBS'),
-        // '/': (context) => const MatchPage(),
+        '/': (context) => const MyHomePage(
+              title: "salem",
+            ),
+        //  '/': (context) => const MatchPage(),
         // '/': (context) => const StandingPage(),
-        '/': (context) => const Schedule(),
+        '/schedule': (context) => const Schedule(),
       },
     );
   }
@@ -57,9 +58,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   final List<Widget> _screens = [
-    Home(),
+    HomePage(),
     Schedule(),
-    MatchPage()
+    FavoritePage()
     // Add other pages here as needed
   ];
 
@@ -124,6 +125,16 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             label: "Schedule",
+          ),
+          BottomNavigationBarItem(
+            icon: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Icon(
+                Icons.star,
+                size: 25,
+              ),
+            ),
+            label: "Favorites",
           ),
         ],
       ),
