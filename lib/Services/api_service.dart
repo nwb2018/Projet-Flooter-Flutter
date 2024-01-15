@@ -15,8 +15,6 @@ class ApiService {
       var response = await http.get(url);
       if (response.statusCode == 200) {
         List<CompetitionModel> _model = competitionModelFromJson(response.body);
-        print("_model");
-        print(_model);
         return _model;
       }
     } catch (e) {
