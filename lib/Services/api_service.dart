@@ -46,6 +46,8 @@ class ApiService {
 
       if (response.statusCode == 200) {
         List<Match> _matches = matchesFromJson(response.body);
+        print("_matches api");
+        print(_matches);
         return _matches;
       } else {
         print("API Error: ${response.reasonPhrase ?? 'Unknown Reason'}");
@@ -105,8 +107,7 @@ class ApiService {
       return [];
     }
   }
-
-  Future<String?> getUserCountry() async {
+   Future<String?> getUserCountry() async {
     try {
       var ipCheckUrl = Uri.parse("http://checkip.amazonaws.com/");
       var ipResponse = await http.get(ipCheckUrl);

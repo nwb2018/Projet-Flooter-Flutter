@@ -46,7 +46,7 @@ Widget build(BuildContext context) {
                   match.awayTeam?.name ?? 'Unknown Away Team';
               String matchDate = match.utcDate.toString() ??
                   'Unknown Date'; // Utilisation de la date UTC
-              String leagueName = match.competition?.name ?? 'Unknown League';
+              // String leagueName = match.competition?.name ?? 'Unknown League';
               String scoreText = '${match.score?.homeTeamScore ?? 0} - ${match.score?.awayTeamScore ?? 0}';
 
               return Card(
@@ -55,7 +55,7 @@ Widget build(BuildContext context) {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('League: $leagueName'),
+                      // Text('League: $leagueName'),
                       Text('Date: $matchDate'),
                       Text('Score: $scoreText'),
                     ],

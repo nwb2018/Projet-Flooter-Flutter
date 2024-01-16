@@ -10,7 +10,6 @@ class FavoritePage extends StatefulWidget {
 }
 
 class _FavoritePageState extends State<FavoritePage> {
-  TextEditingController _favoriteController = TextEditingController();
   late List<Match>? _matches = [];
 
   @override

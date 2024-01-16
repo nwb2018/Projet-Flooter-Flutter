@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flooter/models/area_model.dart';
 
 List<CompetitionModel> competitionModelFromJson(String str) {
   final jsonData = json.decode(str);
@@ -39,7 +38,7 @@ class CompetitionModel {
   String code;
   String emblem;
   String type;
-  AreaModel area; // Added "area" property
+  String area; // Added "area" property
 
   factory CompetitionModel.fromJson(Map<String, dynamic> json) {
     return CompetitionModel(
@@ -48,7 +47,7 @@ class CompetitionModel {
       code: json["code"] ?? "",
       emblem: json["emblem"] ?? "",
       type: json["type"] ?? "",
-      area: AreaModel.fromJson(json["area"]), // Added "area" property
+      area: json['area']['name']?? "",
     );
   }
 
@@ -58,6 +57,6 @@ class CompetitionModel {
         "code": code,
         "emblem": emblem,
         "type": type,
-        "area": area.toJson(), // Added "area" property
+        "area": area, // Added "area" property
       };
 }

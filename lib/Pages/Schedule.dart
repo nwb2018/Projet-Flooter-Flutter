@@ -60,26 +60,28 @@ class _ScheduleState extends State<Schedule> {
           matchDate.day == day.day;
 
       // Check if the competitionId matches
-      bool isSameCompetition = match.competition.id == int.parse(competitionId);
+      bool isSameCompetition = match.competitionId == int.parse(competitionId);
 
-      if(_searchText.isNotEmpty){
-        bool inCompetition = match.competition.name.toUpperCase().contains(_searchText.toUpperCase());
+      if (_searchText.isNotEmpty) {
+        bool inCompetition = match.competitionName
+            .toUpperCase()
+            .contains(_searchText.toUpperCase());
         return inCompetition && isSameCompetition && isSameDate;
       }
 
       return isSameDate && isSameCompetition;
     }).toList();
 
-    return filteredList.isNotEmpty? filteredList :  null;
+    return filteredList.isNotEmpty ? filteredList : null;
   }
-
 
   void _getData(DateTime from, DateTime to) async {
     _matches = await ApiService().getMatches(
-      competitionIds: _competitionIds,
-      dateFrom: formatDateTime(from),
-      dateTo: formatDateTime(to)
-    );
+        competitionIds: _competitionIds,
+        dateFrom: formatDateTime(from),
+        dateTo: formatDateTime(to));
+    print("_matches");
+    print(_matches);
     setState(() {});
     // print("Getting match list");
   }
@@ -89,7 +91,8 @@ class _ScheduleState extends State<Schedule> {
     _chosenDay = DateTime.now().toLocal();
     _medianDay = _chosenDay;
     _dayRange = _selectedDays(_chosenDay!);
-    _getData(_chosenDay!.subtract(const Duration(days: 5)), _chosenDay!.add(const Duration(days: 5)));
+    _getData(_chosenDay!.subtract(const Duration(days: 5)),
+        _chosenDay!.add(const Duration(days: 5)));
     super.initState();
   }
 
@@ -112,62 +115,75 @@ class _ScheduleState extends State<Schedule> {
         body: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(children: [
-            Row(
-              children: [
-                for (int index = 0; index < _dayRange.length; index++)
-                  CustomDate(
-                      customDay: _dayRange[index],
-                      onTap: (chosenDay) {
-                        setState(() {
-                          if(chosenDay.isBefore(_medianDay!.subtract(const Duration(days: 5))) || chosenDay.isAfter(_medianDay!.add(const Duration(days: 4)))) {
-                            _getData(chosenDay.subtract(const Duration(days: 5)), chosenDay.add(const Duration(days: 5)));
-                            _medianDay = chosenDay;
-                          }
-                          _toggleSelectedDay(chosenDay);
-                          _chosenDay = chosenDay;
-                        });
-                      }),
-                CustomDatePicker(updateRange: (newDate) {
-                  setState(() {
-                    if(newDate.isBefore(_medianDay!.subtract(const Duration(days: 5))) || newDate.isAfter(_medianDay!.add(const Duration(days: 4)))) {
-                      _getData(newDate.subtract(const Duration(days: 5)), newDate.add(const Duration(days: 5)));
-                      _medianDay = newDate;
-                    }
-                    _chosenDay = newDate;
-                    _dayRange = _selectedDays(newDate);
-                  });
-                }),
+            Row(children: [
+              for (int index = 0; index < _dayRange.length; index++)
+                CustomDate(
+                    customDay: _dayRange[index],
+                    onTap: (chosenDay) {
+                      setState(() {
+                        if (chosenDay.isBefore(_medianDay!
+                                .subtract(const Duration(days: 5))) ||
+                            chosenDay.isAfter(
+                                _medianDay!.add(const Duration(days: 4)))) {
+                          _getData(chosenDay.subtract(const Duration(days: 5)),
+                              chosenDay.add(const Duration(days: 5)));
+                          _medianDay = chosenDay;
+                        }
+                        _toggleSelectedDay(chosenDay);
+                        _chosenDay = chosenDay;
+                      });
+                    }),
+              CustomDatePicker(updateRange: (newDate) {
+                setState(() {
+                  if (newDate.isBefore(
+                          _medianDay!.subtract(const Duration(days: 5))) ||
+                      newDate
+                          .isAfter(_medianDay!.add(const Duration(days: 4)))) {
+                    _getData(newDate.subtract(const Duration(days: 5)),
+                        newDate.add(const Duration(days: 5)));
+                    _medianDay = newDate;
+                  }
+                  _chosenDay = newDate;
+                  _dayRange = _selectedDays(newDate);
+                });
+              }),
             ]),
-            const SizedBox(height: 16,),
+            const SizedBox(
+              height: 16,
+            ),
             Row(
               children: [
                 MySearchBar(
-                  onSearchChange: (String value){
+                  onSearchChange: (String value) {
                     setState(() {
                       _searchText = value;
                     });
                   },
                 ),
-                const SizedBox(width: 8,),
+                const SizedBox(
+                  width: 8,
+                ),
                 const MyFilter(),
               ],
             ),
-            const SizedBox(height: 12,),
+            const SizedBox(
+              height: 12,
+            ),
             Expanded(
               child: _matches == null || _matches!.isEmpty
-                ? const Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                  itemCount: _competitionIds.length,
-                  itemBuilder: (context, index) {
-                      /* return filteredMatches(_chosenDay, _competitionIds[index]) != null
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView.builder(
+                      itemCount: _competitionIds.length,
+                      itemBuilder: (context, index) {
+                        /* return filteredMatches(_chosenDay, _competitionIds[index]) != null
                        ? CompetitionCard(matches: filteredMatches(_chosenDay, _competitionIds[index]))
                        : null; */
-                    return CompetitionCard(matches: filteredMatches(_chosenDay, _competitionIds[index]));
-                  }
-              ),
+                        return CompetitionCard(
+                            matches: filteredMatches(
+                                _chosenDay, _competitionIds[index]));
+                      }),
             ),
           ]),
         ));
   }
-
 }

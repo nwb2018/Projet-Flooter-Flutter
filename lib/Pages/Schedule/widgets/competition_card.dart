@@ -50,9 +50,9 @@ class _CompetitionCardState extends State<CompetitionCard>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   LeagueTile(
-                    emblem: widget.matches![0].competition.emblem,
-                    name: widget.matches![0].competition.name,
-                    area: widget.matches![0].area,
+                    emblem: widget.matches![0].competitionEmblem,
+                    name: widget.matches![0].competitionName,
+                     area: widget.matches![0].area,
                     toggleExpanded: () {
                       setState(() {
                         isExpanded = !isExpanded;
