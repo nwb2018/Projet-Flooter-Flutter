@@ -1,3 +1,4 @@
+import 'package:flooter/models/team_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flooter/models/table_model.dart';
 import 'package:flooter/services/api_service.dart';
@@ -69,7 +70,7 @@ class _StandingsState extends State<standings> {
     return Row(
       children: [
         buildCell('Team'),
-        buildCell('Positon'),
+        buildCell('Position'),
         buildCell('Played'),
         buildCell('Won'),
         buildCell('Drawn'),
@@ -85,15 +86,15 @@ class _StandingsState extends State<standings> {
     TableItem tableItem = _standings![index];
     return Row(
       children: [
-        buildCell(tableItem.team as String),
-        buildCell(tableItem.position as String),
-        buildCell(tableItem.playedGames as String),
-        buildCell(tableItem.won as String),
-        buildCell(tableItem.draw as String),
-        buildCell(tableItem.lost as String),
-        buildCell(tableItem.points as String),
-        buildCell(tableItem.goalsFor as String),
-        buildCell(tableItem.goalsAgainst as String),
+        buildCell(tableItem.team.name as String),
+        buildCell(tableItem.position.toString() as String),
+        buildCell(tableItem.playedGames.toString() as String),
+        buildCell(tableItem.won.toString() as String),
+        buildCell(tableItem.draw.toString() as String),
+        buildCell(tableItem.lost.toString() as String),
+        buildCell(tableItem.points.toString() as String),
+        buildCell(tableItem.goalsFor.toString() as String),
+        buildCell(tableItem.goalsAgainst.toString() as String),
       ],
     );
   }
