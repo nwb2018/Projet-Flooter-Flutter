@@ -43,7 +43,20 @@ class _HomePageState extends State<HomePage> {
   void _getData() async {
     final List<CompetitionModel> competitions =
         (await ApiService().getCompetitions())!;
+    final String userCountry = (await ApiService().getUserCountry())!;
+
     setState(() {
+      // Sort competitions putting the user's country's competition first
+      competitions.sort((a, b) {
+        if (a.area.name == userCountry) {
+          return -1;
+        } else if (b.area.name == userCountry) {
+          return 1;
+        } else {
+          return a.name.compareTo(b.name);
+        }
+      });
+
       _competitions = competitions;
       _filteredCompetitions = competitions;
     });
@@ -147,9 +160,8 @@ class _LeagueListState extends State<LeagueList> {
   Widget build(BuildContext context) {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: widget.competitions
-          .where((comp) => comp.emblem.isNotEmpty)
-          .length,
+      itemCount:
+          widget.competitions.where((comp) => comp.emblem.isNotEmpty).length,
       itemBuilder: (context, index) {
         final filteredCompetitions = widget.competitions
             .where((comp) => comp.emblem.isNotEmpty)

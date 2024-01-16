@@ -6,8 +6,11 @@ class SplashContent extends StatelessWidget {
     this.text,
     this.text2,
     this.image,
+    required this.screenHeight,
   }) : super(key: key);
+  
   final String? text, image, text2;
+  final double screenHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -15,11 +18,11 @@ class SplashContent extends StatelessWidget {
       children: <Widget>[
         Image.asset(
           image!,
-          height: (185),
-          width: (255),
+          height: screenHeight * 0.25, // Adjusted size
+          width: double.infinity,
         ),
         SizedBox(
-          height: 30,
+          height: screenHeight * 0.04, // Adjusted size
         ),
         Text(
           text!,
@@ -31,7 +34,7 @@ class SplashContent extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 20,
+          height: screenHeight * 0.02, // Adjusted size
         ),
         Text(
           text2!,

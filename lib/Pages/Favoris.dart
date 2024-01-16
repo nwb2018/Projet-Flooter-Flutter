@@ -20,8 +20,9 @@ class _FavoritePageState extends State<FavoritePage> {
   }
 
   void _getData() async {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-    int preferredTeamId = prefs.getInt('preferredTeamId') ?? 5; // Default to 5 if not found
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int preferredTeamId =
+        prefs.getInt('preferredTeamId') ?? 5; // Default to 5 if not found
 
     _matches = await ApiService().getMatchesByTeam(preferredTeamId);
     setState(() {});
@@ -31,7 +32,16 @@ class _FavoritePageState extends State<FavoritePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Favorites'),
+        title: const Text(
+          'Favorites',
+          style: TextStyle(
+            color: Color(0xFF23262D),
+            fontSize: 20,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w700,
+            height: 0.07,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

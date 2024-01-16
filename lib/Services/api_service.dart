@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flooter/constants.dart';
@@ -102,6 +103,30 @@ class ApiService {
       log(e.toString());
       // Handle other exceptions as needed.
       return [];
+    }
+  }
+
+  Future<String?> getUserCountry() async {
+    try {
+      var ipCheckUrl = Uri.parse("http://checkip.amazonaws.com/");
+      var ipResponse = await http.get(ipCheckUrl);
+
+      if (ipResponse.statusCode == 200) {
+        var ipAddress = ipResponse.body.trim();
+
+        var geoLocationUrl = Uri.parse(
+            "https://api.ipgeolocation.io/ipgeo?apiKey=e3f347b989f34e239402188106fbdf4c&ip=$ipAddress");
+
+        var geoLocationResponse = await http.get(geoLocationUrl);
+
+        if (geoLocationResponse.statusCode == 200) {
+          var geoData = json.decode(geoLocationResponse.body);
+          var country = geoData['country_name'];
+          return country;
+        }
+      }
+    } catch (e) {
+      log(e.toString());
     }
   }
 }

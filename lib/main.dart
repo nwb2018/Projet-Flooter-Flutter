@@ -26,17 +26,18 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/',
+      initialRoute: '/splash',
       debugShowCheckedModeBanner:
           false, // Set this to false to remove the debug banner
       routes: {
-        //  '/': (context) => SplashScreen(),
-        '/': (context) => const MyHomePage(
+          '/home': (context) => const MyHomePage(
               title: "salem",
             ),
-        //  '/': (context) => const MatchPage(),
-        // '/': (context) => const StandingPage(),
+        '/splash': (context) => SplashScreen(),
+      
         '/schedule': (context) => const Schedule(),
+        '/match': (context) => const MatchPage(),
+        '/standing': (context) => const StandingPage(),
       },
     );
   }
