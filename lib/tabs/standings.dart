@@ -1,15 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flooter/models/table_model.dart';
+import 'package:flooter/services/api_service.dart';
 
-class standings extends StatelessWidget {
-  final String _id = '1';
-  final String team1Logo = 'xxx';
-  final String team1Name = 'Team 1';
-  final String match = '38';
-  final String win = '29';
-  final String defeat = '6';
-  final String _nul = '3';
-  final String time = '99:26';
-  final String pts = '93';
+class standings extends StatefulWidget {
+  const standings({Key? key}) : super(key: key);
+
+  @override
+  State<standings> createState() => _StandingsState();
+}
+
+class _StandingsState extends State<standings> {
+  late List<TableItem>? _standings = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
+
+  void _getData() async {
+    ApiService apiService = ApiService();
+    _standings = await apiService.getCompetitionStandings("PL") ?? [];
+    print(_standings);
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +39,10 @@ class standings extends StatelessWidget {
                 title: buildHeader(),
                 floating: true,
                 pinned: true,
-                expandedHeight: 50.0, // Hauteur de l'en-tête
+                expandedHeight: 50.0,
                 flexibleSpace: FlexibleSpaceBar(
                   background: Container(
-                    color: Colors.indigoAccent, // Couleur qui surligne l'en-tête
+                    color: Colors.indigoAccent,
                   ),
                 ),
               ),
@@ -36,14 +50,12 @@ class standings extends StatelessWidget {
                 delegate: SliverChildBuilderDelegate(
                       (context, index) {
                     if (index == 0) {
-                      // L'en-tête a déjà été affichée
                       return SizedBox.shrink();
                     } else {
-                      // Les éléments suivants avec séparateurs
-                      return buildRow(index);
+                      return buildRow(index - 1);
                     }
                   },
-                  childCount: 25, // nombre total d'éléments suivants
+                  childCount: _standings!.length + 1,
                 ),
               ),
             ],
@@ -56,31 +68,32 @@ class standings extends StatelessWidget {
   Widget buildHeader() {
     return Row(
       children: [
-        buildCell('ID'),
-        buildCell('Logo'),
         buildCell('Team'),
-        buildCell('Matches'),
-        buildCell('Wins'),
-        buildCell('Defeats'),
-        buildCell('Draws'),
-        buildCell('Time'),
+        buildCell('Positon'),
+        buildCell('Played'),
+        buildCell('Won'),
+        buildCell('Drawn'),
+        buildCell('Lost'),
         buildCell('Points'),
+        buildCell('GoalsFor'),
+        buildCell('GoalsAgainst'),
       ],
     );
   }
 
   Widget buildRow(int index) {
+    TableItem tableItem = _standings![index];
     return Row(
       children: [
-        buildCell(_id),
-        buildCell(team1Logo),
-        buildCell(team1Name),
-        buildCell(match),
-        buildCell(win),
-        buildCell(defeat),
-        buildCell(_nul),
-        buildCell(time),
-        buildCell(pts),
+        buildCell(tableItem.team as String),
+        buildCell(tableItem.position as String),
+        buildCell(tableItem.playedGames as String),
+        buildCell(tableItem.won as String),
+        buildCell(tableItem.draw as String),
+        buildCell(tableItem.lost as String),
+        buildCell(tableItem.points as String),
+        buildCell(tableItem.goalsFor as String),
+        buildCell(tableItem.goalsAgainst as String),
       ],
     );
   }
@@ -89,22 +102,20 @@ class standings extends StatelessWidget {
     return Expanded(
       child: Container(
         padding: EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           border: Border(
-            bottom: BorderSide(color: Colors.grey), // Ligne horizontale entre les cellules
+            bottom: BorderSide(color: Colors.grey),
           ),
         ),
         child: Text(
           data,
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 14.0, // Taille du texte de l'en-tête
-            color: Colors.black, // Couleur du texte de l'en-tête
+          style: const TextStyle(
+            fontSize: 14.0,
+            color: Colors.black,
           ),
         ),
       ),
     );
   }
 }
-
-

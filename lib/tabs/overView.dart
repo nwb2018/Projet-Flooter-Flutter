@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 
-class overView extends StatelessWidget {
-  final List<String> entries = <String>['A', 'B', 'C'];
-  final List<int> colorCodes = <int>[600, 500, 100];
+class overView extends StatefulWidget {
+  @override
+  _OverViewState createState() => _OverViewState();
+}
 
-  // Ajout d'une variable pour l'espacement entre la deuxième et la troisième colonne
-  final double spacingBetweenColumns = 16.0;
+class _OverViewState extends State<overView> {
+  // Nombre initial de données à afficher
+  int initialDataCount = 5;
+  // Nombre de données à ajouter à chaque clic sur "Afficher plus"
+  int dataToAdd = 5;
+  // Indicateur pour vérifier si le bouton "Afficher plus" a été cliqué
+  bool showMoreClicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -13,77 +19,98 @@ class overView extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Card(
         clipBehavior: Clip.hardEdge,
-        child: ListView.builder(
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            // Remplacez les valeurs par les données réelles de votre modèle de match
-            String team1Logo = 'path/to/team1_logo.png';
-            String team1Name = 'Team 1';
-            String matchTime = '12:00 PM';
-            String score1 = '2';
-            String team2Logo = 'path/to/team2_logo.png';
-            String team2Name = 'Team 2';
-            String score2 = '1';
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: showMoreClicked ? initialDataCount + dataToAdd : initialDataCount,
+                itemBuilder: (context, index) {
+                  // Remplacez le contenu par les données réelles de votre modèle de match
+                  String team1Name = 'Team 1';
+                  String matchTime = '12:00 PM';
+                  String score1 = '2';
+                  String team2Name = 'Team 2';
+                  String score2 = '1';
 
-            return Container(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    ListTile(
-                      title: Row(
+                  return Container(
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
                         children: [
-                          // Image.asset(team1Logo, height: 30, width: 30),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              team1Name,
-                              overflow: TextOverflow.ellipsis,
+                          ListTile(
+                            title: Row(
+                              children: [
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    team1Name,
+                                    overflow: TextOverflow.ellipsis, //si le texte est trop long pour tenir dans la zone spécifiée, il sera coupé et remplacé par des points de suspension
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Text('$score1'),
+                              ],
                             ),
                           ),
-                          SizedBox(width: spacingBetweenColumns), // Espacement
-                          Text('$score1'),
+                          SizedBox(height: 16),
+                          ListTile(
+                            title: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    matchTime,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                          ListTile(
+                            title: Row(
+                              children: [
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    team2Name,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Text('$score2'),
+                              ],
+                            ),
+                          ),
+                          Divider(height: 0,),
                         ],
                       ),
                     ),
-                    ListTile(
-                      title: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              matchTime, // Affichage du temps dans la deuxième ligne
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ),
+                  );
+                },
+              ),
+            ),
+            // Afficher le bouton "Afficher plus" en dehors de la boucle
+            if (!showMoreClicked)
+              InkWell(
+                onTap: () {
+                  // Lorsqu'on clique sur le bouton "Afficher plus", augmenter le nombre de données à afficher
+                  setState(() {
+                    showMoreClicked = true;
+                  });
+                },
+                child: Container(
+                  height: 50, // Hauteur du bouton "Afficher plus"
+                  child: const Center(
+                    child: Text(
+                      "Afficher plus",
+                      style: TextStyle(color: Colors.blue),
                     ),
-                    // Ajout d'un espace entre la deuxième et la troisième colonne
-                    SizedBox(height: spacingBetweenColumns),
-                    ListTile(
-                      title: Row(
-                        children: [
-                          // Image.asset(team2Logo, height: 30, width: 30),
-                          SizedBox(width: spacingBetweenColumns), // Espacement
-                          Expanded(
-                            child: Text(
-                              team2Name,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          Text('$score2'),
-                        ],
-                      ),
-                    ),
-                    Divider(height: 0,), // Séparateur entre les matchs
-                  ],
+                  ),
                 ),
               ),
-            );
-          },
+          ],
         ),
       ),
     );
