@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 10),
               Container(
-                height: 180,
+                height: 140,
                 child: LeagueList(competitions: _filteredCompetitions),
               ),
               SizedBox(height: 20),
@@ -155,13 +155,13 @@ class _LeagueListState extends State<LeagueList> {
             .where((comp) => comp.emblem.isNotEmpty)
             .toList();
         return Container(
-          width: 200,
-          height: 30,
+          width: 140,
+          height: 10,
           margin: EdgeInsets.symmetric(horizontal: 8),
           child: LeagueCard(
             competition: filteredCompetitions[index],
-            cardWidth: 170,
-            cardHeight: 10,
+            cardWidth: 140,
+            cardHeight: 50,
           ),
         );
       },

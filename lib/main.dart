@@ -27,6 +27,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       initialRoute: '/',
+      debugShowCheckedModeBanner:
+          false, // Set this to false to remove the debug banner
       routes: {
         //  '/': (context) => SplashScreen(),
         '/': (context) => const MyHomePage(

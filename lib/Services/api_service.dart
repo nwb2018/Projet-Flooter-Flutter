@@ -56,6 +56,28 @@ class ApiService {
     }
   }
 
+  Future<List<Match>?> getMatchesByTeam(int? teamIds) async {
+    try {
+      var url = Uri.parse(
+          '${ApiConstants.baseUrl + ApiConstants.teamEndpoint}/$teamIds${ApiConstants.matchEndpoint}');
+
+      var headers = {'X-Auth-Token': ApiConstants.apiKey};
+
+      var response = await http.get(url, headers: headers);
+
+      if (response.statusCode == 200) {
+        List<Match> _matches = matchesFromJson(response.body);
+        return _matches;
+      } else {
+        print("API Error: ${response.reasonPhrase ?? 'Unknown Reason'}");
+        return [];
+      }
+    } catch (e) {
+      log(e.toString());
+      return null;
+    }
+  }
+
   Future<List<TableItem>> getCompetitionStandings(
       String competitionCode) async {
     try {

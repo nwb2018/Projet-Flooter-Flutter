@@ -1,4 +1,8 @@
+import 'package:flooter/Pages/Schedule/widgets/competition_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flooter/Services/api_service.dart';
+import 'package:flooter/models/match_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FavoritePage extends StatefulWidget {
   @override
@@ -7,54 +11,47 @@ class FavoritePage extends StatefulWidget {
 
 class _FavoritePageState extends State<FavoritePage> {
   TextEditingController _favoriteController = TextEditingController();
-  List<String> favorites = [];
+  late List<Match>? _matches = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
+
+  void _getData() async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+    int preferredTeamId = prefs.getInt('preferredTeamId') ?? 5; // Default to 5 if not found
+
+    _matches = await ApiService().getMatchesByTeam(preferredTeamId);
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Page Favoris'),
+        title: Text('Favorites'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
-              controller: _favoriteController,
-              decoration: InputDecoration(
-                labelText: 'Nom du favori',
-              ),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                String favoriteName = _favoriteController.text;
-                if (favoriteName.isNotEmpty) {
-                  setState(() {
-                    favorites.add(favoriteName);
-                    _favoriteController.clear();
-                  });
-                }
-              },
-              child: Text('Ajouter aux favoris'),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Favoris:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Expanded(
-              child: ListView.builder(
-                itemCount: favorites.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(favorites[index]),
-                  );
-                },
-              ),
-            ),
+            _matches == null || _matches!.isEmpty
+                ? Center(child: CircularProgressIndicator())
+                : Expanded(
+                    child: ListView.builder(
+                      itemCount: _matches!.length,
+                      itemBuilder: (context, index) {
+                        if (_matches![index].status == 'FINISHED') {
+                          return Container();
+                        } else {
+                          return CompetitionCard(matches: [_matches![index]]);
+                        }
+                      },
+                    ),
+                  ),
           ],
         ),
       ),
