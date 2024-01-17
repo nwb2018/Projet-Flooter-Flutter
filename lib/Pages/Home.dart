@@ -45,21 +45,21 @@ class _HomePageState extends State<HomePage> {
         (await ApiService().getCompetitions())!;
     final String userCountry = (await ApiService().getUserCountry())!;
 
-    // setState(() {
-    //   // Sort competitions putting the user's country's competition first
-    //   competitions.sort((a, b) {
-    //     if (a.area == userCountry) {
-    //       return -1;
-    //     } else if (b.area == userCountry) {
-    //       return 1;
-    //     } else {
-    //       return a.name.compareTo(b.name);
-    //     }
-    //   });
+    setState(() {
+      // Sort competitions putting the user's country's competition first
+      competitions.sort((a, b) {
+        if (a.area == userCountry) {
+          return -1;
+        } else if (b.area == userCountry) {
+          return 1;
+        } else {
+          return a.name.compareTo(b.name);
+        }
+      });
 
-    //   _competitions = competitions;
-    //    _filteredCompetitions = competitions;
-    // });
+      _competitions = competitions;
+       _filteredCompetitions = competitions;
+    });
   }
 
   void _loadFeaturedNews() {
