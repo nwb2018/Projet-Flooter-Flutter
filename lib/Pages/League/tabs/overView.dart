@@ -1,6 +1,8 @@
-
 import 'package:flooter/Pages/League/tabs/standings.dart';
+import 'package:flooter/Services/api_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flooter/models/match_model.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class OverView extends StatefulWidget {
   @override
@@ -8,10 +10,26 @@ class OverView extends StatefulWidget {
 }
 
 class _OverViewState extends State<OverView> {
+  List<Match>? _matches = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
+
+  void _getData() async {
+    _matches = (await ApiService().getCompetitionMatches("2003", 1) ?? [])
+        .cast<Match>();
+    setState(() {});
+  }
+
   // Nombre initial de données à afficher
   int initialDataCount = 4;
+
   // Nombre de données à ajouter à chaque clic sur "Afficher plus"
-  int dataToAdd = 5;
+  //int dataToAdd = 5;
+
   // Indicateur pour vérifier si le bouton "Afficher plus" a été cliqué
   bool showMoreClicked = false;
 
@@ -24,16 +42,35 @@ class _OverViewState extends State<OverView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            //week 31
+            const Text.rich(
+              TextSpan(
+                text: 'Hello', // default text style
+                children: <TextSpan>[
+                  TextSpan(
+                      text: ' beautiful ',
+                      style: TextStyle(fontStyle: FontStyle.italic)),
+                  TextSpan(
+                    text: 'world',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Expanded(
               child: ListView.builder(
-                itemCount: showMoreClicked ? initialDataCount + dataToAdd : initialDataCount,
+                itemCount: showMoreClicked
+                    ? _matches!.length
+                    : initialDataCount, //+ dataToAdd,
                 itemBuilder: (context, index) {
                   // Remplacez le contenu par les données réelles de votre modèle de match
-                  String team1Name = 'Team 1';
-                  String matchTime = '12:00 PM';
-                  String score1 = '2';
-                  String team2Name = 'Team 2';
-                  String score2 = '1';
+                  Match match = _matches![index];
+                  String homeTeamName =
+                      match.homeTeam?.name ?? 'Unknown Home Team';
+                  String awayTeamName =
+                      match.awayTeam?.name ?? 'Unknown Away Team';
 
                   return Container(
                     color: Colors.white,
@@ -44,25 +81,27 @@ class _OverViewState extends State<OverView> {
                           ListTile(
                             title: Row(
                               children: [
-                                SizedBox(width: 4),
+                                SizedBox(width: 4.0),
+                                crestImage(match.homeTeam.crest),
                                 Expanded(
                                   child: Text(
-                                    team1Name,
-                                    overflow: TextOverflow.ellipsis, //si le texte est trop long pour tenir dans la zone spécifiée, il sera coupé et remplacé par des points de suspension
+                                    homeTeamName.toString(),
+                                    overflow: TextOverflow
+                                        .ellipsis, //si le texte est trop long pour tenir dans la zone spécifiée, il sera coupé et remplacé par des points de suspension
                                   ),
                                 ),
-                                SizedBox(width: 4),
-                                Text('$score1'),
+                                SizedBox(width: 4.0),
+                                Text(match.score.winner.toString()),
                               ],
                             ),
                           ),
-                          SizedBox(height: 64.0),
+                          SizedBox(height: 4.0),
                           ListTile(
                             title: Row(
                               children: [
                                 Expanded(
                                   child: Text(
-                                    matchTime,
+                                    match.minute.toString(),
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.center,
                                   ),
@@ -70,23 +109,27 @@ class _OverViewState extends State<OverView> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 64.0),
+                          SizedBox(height: 4.0),
                           ListTile(
                             title: Row(
                               children: [
-                                SizedBox(width: 4),
+                                SizedBox(width: 4.0),
+                                crestImage(match.awayTeam.crest),
+                                SizedBox(width: 8.0),
                                 Expanded(
                                   child: Text(
-                                    team2Name,
+                                    awayTeamName.toString(),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                SizedBox(width: 4),
-                                Text('$score2'),
+                                SizedBox(width: 4.0),
+                                Text(match.score.winner.toString()),
                               ],
                             ),
                           ),
-                          Divider(height: 4.0,),
+                          Divider(
+                            height: 4.0,
+                          ),
                         ],
                       ),
                     ),
@@ -113,14 +156,21 @@ class _OverViewState extends State<OverView> {
                   ),
                 ),
               ),
-              SizedBox(height: 4,),
-              Flexible(
+            SizedBox(
+              height: 4,
+            ),
+            Flexible(
                 //fit: FlexFit.loose,
-                child: Standings(showHeading: true)
-              ),
+                child: Standings(showHeading: true)),
           ],
         ),
       ),
     );
+  }
+
+  Widget crestImage(String crest) {
+    return (crest.endsWith('.svg'))
+        ? SvgPicture.network(crest, height: 20, width: 20)
+        : Image.network(crest, height: 20, width: 20);
   }
 }
