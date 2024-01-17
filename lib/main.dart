@@ -17,29 +17,32 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
+  static final ValueNotifier<ThemeMode> themeNotifier =
+      ValueNotifier(ThemeMode.light);
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ECLUBS',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      initialRoute: '/splash',
-      debugShowCheckedModeBanner:
-          false, // Set this to false to remove the debug banner
-      routes: {
-          '/home': (context) => const MyHomePage(
-              title: "salem",
-            ),
-        '/splash': (context) => SplashScreen(),
-      
-        '/schedule': (context) => const Schedule(),
-        '/match': (context) => const MatchPage(),
-        '/standing': (context) => const StandingPage(),
-      },
-    );
+    return ValueListenableBuilder<ThemeMode>(
+        valueListenable: themeNotifier,
+        builder: (_, ThemeMode currentMode, __) {
+          return MaterialApp(
+            title: 'ECLUBS',
+            theme: ThemeData(primarySwatch: Colors.amber),
+            darkTheme: ThemeData.dark(),
+            themeMode: currentMode,
+            initialRoute: '/splash',
+            debugShowCheckedModeBanner:
+                false, // Set this to false to remove the debug banner
+            routes: {
+              '/home': (context) => const MyHomePage(
+                    title: "salem",
+                  ),
+              '/splash': (context) => SplashScreen(),
+              '/schedule': (context) => const Schedule(),
+              '/match': (context) => const MatchPage(),
+              '/standing': (context) => const StandingPage(),
+            },
+          );
+        });
   }
 }
 
@@ -76,6 +79,21 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('3ILFoot.com'),
+        actions: [
+          IconButton(
+              icon: Icon(MyApp.themeNotifier.value == ThemeMode.light
+                  ? Icons.dark_mode
+                  : Icons.light_mode),
+              onPressed: () {
+                MyApp.themeNotifier.value =
+                    MyApp.themeNotifier.value == ThemeMode.light
+                        ? ThemeMode.dark
+                        : ThemeMode.light;
+              })
+        ],
+      ),
       body: PageView(
         controller: _pageController,
         children: _screens,
