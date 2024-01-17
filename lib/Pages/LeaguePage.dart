@@ -1,7 +1,10 @@
-import 'package:flooter/tabs/matches.dart';
-import 'package:flooter/tabs/standings.dart';
-import 'package:flooter/tabs/overView.dart';
+import 'package:flooter/Pages/League/tabs/matches.dart';
+import 'package:flooter/Pages/League/tabs/standings.dart';
+import 'package:flooter/Pages/League/tabs/OverView.dart';
 import 'package:flutter/material.dart';
+
+import '../models/team_model.dart';
+
 
 
 class LeaguePage extends StatelessWidget {
@@ -58,7 +61,7 @@ class LeaguePage extends StatelessWidget {
             ),
 
             //week 31
-            const Text.rich(
+           /* const Text.rich(
               TextSpan(
                 text: 'Hello', // default text style
                 children: <TextSpan>[
@@ -66,7 +69,7 @@ class LeaguePage extends StatelessWidget {
                   TextSpan(text: 'world', style: TextStyle(fontWeight: FontWeight.bold,),),
                 ],
               ),
-            ),
+            ),*/
 
             //afficher contenu des tabs
             Expanded(
@@ -74,13 +77,13 @@ class LeaguePage extends StatelessWidget {
                   children: [
 
                     //overView
-                    overView(),
+                    OverView(),
 
                     //matches
                     matches(),
 
                     //standings
-                    standings(),
+                    Standings(showHeading: false,),
                   ]
               ),
             )

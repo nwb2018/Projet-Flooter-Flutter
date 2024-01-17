@@ -1,13 +1,15 @@
+
+import 'package:flooter/Pages/League/tabs/standings.dart';
 import 'package:flutter/material.dart';
 
-class overView extends StatefulWidget {
+class OverView extends StatefulWidget {
   @override
   _OverViewState createState() => _OverViewState();
 }
 
-class _OverViewState extends State<overView> {
+class _OverViewState extends State<OverView> {
   // Nombre initial de données à afficher
-  int initialDataCount = 5;
+  int initialDataCount = 4;
   // Nombre de données à ajouter à chaque clic sur "Afficher plus"
   int dataToAdd = 5;
   // Indicateur pour vérifier si le bouton "Afficher plus" a été cliqué
@@ -16,10 +18,11 @@ class _OverViewState extends State<overView> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(8.0),
       child: Card(
         clipBehavior: Clip.hardEdge,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Expanded(
               child: ListView.builder(
@@ -41,19 +44,19 @@ class _OverViewState extends State<overView> {
                           ListTile(
                             title: Row(
                               children: [
-                                SizedBox(width: 8),
+                                SizedBox(width: 4),
                                 Expanded(
                                   child: Text(
                                     team1Name,
                                     overflow: TextOverflow.ellipsis, //si le texte est trop long pour tenir dans la zone spécifiée, il sera coupé et remplacé par des points de suspension
                                   ),
                                 ),
-                                SizedBox(width: 8),
+                                SizedBox(width: 4),
                                 Text('$score1'),
                               ],
                             ),
                           ),
-                          SizedBox(height: 16),
+                          SizedBox(height: 64.0),
                           ListTile(
                             title: Row(
                               children: [
@@ -67,23 +70,23 @@ class _OverViewState extends State<overView> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 16),
+                          SizedBox(height: 64.0),
                           ListTile(
                             title: Row(
                               children: [
-                                SizedBox(width: 8),
+                                SizedBox(width: 4),
                                 Expanded(
                                   child: Text(
                                     team2Name,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                SizedBox(width: 8),
+                                SizedBox(width: 4),
                                 Text('$score2'),
                               ],
                             ),
                           ),
-                          Divider(height: 0,),
+                          Divider(height: 4.0,),
                         ],
                       ),
                     ),
@@ -109,6 +112,11 @@ class _OverViewState extends State<overView> {
                     ),
                   ),
                 ),
+              ),
+              SizedBox(height: 4,),
+              Flexible(
+                //fit: FlexFit.loose,
+                child: Standings(showHeading: true)
               ),
           ],
         ),
