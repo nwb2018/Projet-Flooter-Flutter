@@ -31,8 +31,9 @@ class ApiService {
 
       // Define filters based on provided parameters
       var filters = <String, dynamic>{};
-      if (competitionIds != null)
+      if (competitionIds != null) {
         filters['competitions'] = competitionIds.join(',');
+      }
       if (dateFrom != null) filters['dateFrom'] = dateFrom;
       if (dateTo != null) filters['dateTo'] = dateTo;
 

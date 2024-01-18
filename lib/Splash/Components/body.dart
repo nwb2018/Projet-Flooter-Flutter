@@ -39,7 +39,7 @@ class _BodyState extends State<Body> {
   void _checkShowSplash() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool showSplash = prefs.getBool('showSplash') ?? true;
-    // prefs.remove("showSplash"); // comment in the
+    prefs.remove("showSplash"); // comment in the
 
     if (showSplash) {
       prefs.setBool('showSplash', false);
