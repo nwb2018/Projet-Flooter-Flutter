@@ -91,7 +91,7 @@ class _OverViewState extends State<OverView> {
                                   ),
                                 ),
                                 SizedBox(width: 4.0),
-                                Text(match.score.winner.toString()),
+                                Text(match.score.homeTeamScore.toString()),
                               ],
                             ),
                           ),
@@ -101,7 +101,7 @@ class _OverViewState extends State<OverView> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    match.minute.toString(),
+                                    match.matchday.toString(),
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.center,
                                   ),
@@ -123,7 +123,7 @@ class _OverViewState extends State<OverView> {
                                   ),
                                 ),
                                 SizedBox(width: 4.0),
-                                Text(match.score.winner.toString()),
+                                Text(match.score.awayTeamScore.toString()),
                               ],
                             ),
                           ),

@@ -71,7 +71,7 @@ class _MatchesState extends State<matches> {
                                   ),
                                 ),
                                 SizedBox(width: 4.0),
-                                Text(match.score.winner.toString()),
+                                Text(match.score.homeTeamScore.toString()),
                               ],
                             ),
                           ),
@@ -81,7 +81,7 @@ class _MatchesState extends State<matches> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    match.minute.toString(),
+                                    match.matchday.toString(),
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.center,
                                   ),
@@ -103,7 +103,7 @@ class _MatchesState extends State<matches> {
                                   ),
                                 ),
                                 SizedBox(width: 4.0),
-                                Text(match.score.winner.toString()),
+                                Text(match.score.awayTeamScore.toString()),
                               ],
                             ),
                           ),

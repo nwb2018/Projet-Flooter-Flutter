@@ -3,13 +3,17 @@ import 'package:flooter/Pages/League/tabs/standings.dart';
 import 'package:flooter/Pages/League/tabs/OverView.dart';
 import 'package:flutter/material.dart';
 
-import '../models/team_model.dart';
 
 
 
-class LeaguePage extends StatelessWidget {
+class LeaguePage extends StatefulWidget {
   const LeaguePage({super.key});
 
+  @override
+  State<LeaguePage> createState() => _LeaguePageState();
+}
+
+class _LeaguePageState extends State<LeaguePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -59,17 +63,6 @@ class LeaguePage extends StatelessWidget {
                   ]
               ),
             ),
-
-            //week 31
-           /* const Text.rich(
-              TextSpan(
-                text: 'Hello', // default text style
-                children: <TextSpan>[
-                  TextSpan(text: ' beautiful ', style: TextStyle(fontStyle: FontStyle.italic)),
-                  TextSpan(text: 'world', style: TextStyle(fontWeight: FontWeight.bold,),),
-                ],
-              ),
-            ),*/
 
             //afficher contenu des tabs
             Expanded(
