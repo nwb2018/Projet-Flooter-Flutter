@@ -21,6 +21,7 @@ class ApiService {
     } catch (e) {
       log(e.toString());
     }
+    return null;
   }
 
   Future<List<Match>?> getMatches(
@@ -129,5 +130,6 @@ class ApiService {
     } catch (e) {
       log(e.toString());
     }
+    return null;
   }
 }
