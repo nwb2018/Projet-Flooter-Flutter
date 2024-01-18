@@ -27,7 +27,7 @@ class TableItem {
     required this.goalsFor,
     required this.goalsAgainst,
     required this.goalDifference,
-  });
+  }); // Add this line  });
 
   factory TableItem.fromJson(Map<String, dynamic> json) {
     return TableItem(
