@@ -17,7 +17,7 @@ class Schedule extends StatefulWidget {
 }
 
 class _ScheduleState extends State<Schedule> {
-  final List<String> _competitionIds = ['2015', '2021', '2019', '2017'];
+  final List<String> _competitionIds = ['2015', '2021', '2019', '2014', '2017'];
   DateTime? _chosenDay, _medianDay;
   List<CustomDay> _dayRange = [];
   String? selectedFilter;

@@ -89,16 +89,21 @@ class MatchTile extends StatelessWidget {
                           : Row(
                               children: [
                                 SizedBox(
-                                  width: 30, height: 50,
-                                  child: match.status!='FINISHED'
+                                  width: 40, height: 50,
+                                  child: match.status != 'FINISHED'
                                     ? Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          "${match.score.duration}'",
-                                          style: textStyle(14, FontWeight.w600),
-                                        ),
+                                      calculateDifferenceInMinutes(match.utcDate) != 'P'
+                                        ? Text(
+                                           "${calculateDifferenceInMinutes(match.utcDate)}'",
+                                            style: textStyle(14, FontWeight.w600),
+                                          )
+                                        : Text(
+                                            "PAUSED",
+                                            style: textStyle(10, FontWeight.w600),
+                                          )
                                       ],
                                     )
                                     : const SizedBox(),
@@ -151,6 +156,26 @@ class MatchTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
     );
+  }
+
+  String calculateDifferenceInMinutes(String utcDate) {
+    // Parse the UTC date string
+    DateTime dateTime = DateTime.parse(utcDate).toLocal();
+    DateTime currentTime = DateTime.now();
+    Duration difference = currentTime.difference(dateTime);
+    int minutesDifference = difference.inMinutes;
+    // Apply the specified conditions
+    if (minutesDifference <= 45) {
+      return minutesDifference.toString();
+    } else if (minutesDifference <= 49) {
+      return "45+${minutesDifference - 45}";
+    } else if (minutesDifference < 64) {
+      return 'P';
+    } else if (minutesDifference <= 109) {
+      return (minutesDifference - 19).toString();
+    } else {
+      return "90+${minutesDifference - 109}";
+    }
   }
 
   List<String> getDateTime(String utcDate) {
