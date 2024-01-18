@@ -25,9 +25,7 @@ class MatchTile extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             crestImage(match.homeTeam.crest),
-                            const SizedBox(
-                              height: 12,
-                            ),
+                            const SizedBox(height: 12,),
                             crestImage(match.awayTeam.crest),
                           ],
                         ),
@@ -57,63 +55,58 @@ class MatchTile extends StatelessWidget {
                   SizedBox(
                       height: 50,
                       width: 80,
-                      child: match.status == 'TIMED' ||
-                              match.status == 'CANCELLED'
+                      child: match.status == 'TIMED' || match.status == 'CANCELLED'
                           ? Row(
-                              children: [
-                                Expanded(
+                            children: [
+                              Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       match.status == 'TIMED'
-                                          ? Text(
-                                              getDateTime(match.utcDate)[0]
-                                                  .toUpperCase(),
-                                              style: textStyle(
-                                                  14, FontWeight.w600),
-                                            )
-                                          : Text(
-                                              'CANCELLED',
-                                              style: textStyle(
-                                                  10, FontWeight.w600),
-                                            ),
+                                      ? Text(
+                                        getDateTime(match.utcDate)[0].toUpperCase(),
+                                        style: textStyle(14, FontWeight.w600),
+                                      )
+                                      : Text(
+                                        'CANCELLED',
+                                        style: textStyle(10, FontWeight.w600),
+                                      ),
                                       const SizedBox(
                                         height: 6,
                                       ),
                                       match.status == 'TIMED'
-                                          ? Text(
-                                              getDateTime(match.utcDate)[1],
-                                              style: textStyle(
-                                                  14, FontWeight.w600),
-                                            )
-                                          : const SizedBox(),
+                                      ? Text(
+                                          getDateTime(match.utcDate)[1],
+                                          style: textStyle(14, FontWeight.w600),
+                                        )
+                                        : const SizedBox(),
                                     ],
                                   ),
                                 ),
-                              ],
-                            )
+                            ],
+                          )
                           : Row(
                               children: [
                                 SizedBox(
-                                  width: 30,
-                                  height: 50,
-                                  child: match.status != 'FINISHED' &&
-                                          match.status == 'REGULAR'
-                                      ? Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "${match.score.duration}'",
-                                              style: textStyle(
-                                                  14, FontWeight.w600),
-                                            ),
-                                          ],
-                                        )
-                                      : const SizedBox(),
+                                  width: 40, height: 50,
+                                  child: match.status != 'FINISHED'
+                                    ? Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                      calculateDifferenceInMinutes(match.utcDate) != 'P'
+                                        ? Text(
+                                           "${calculateDifferenceInMinutes(match.utcDate)}'",
+                                            style: textStyle(14, FontWeight.w600),
+                                          )
+                                        : Text(
+                                            "PAUSED",
+                                            style: textStyle(10, FontWeight.w600),
+                                          )
+                                      ],
+                                    )
+                                    : const SizedBox(),
                                 ),
                                 Expanded(
                                   child: Column(
@@ -165,18 +158,35 @@ class MatchTile extends StatelessWidget {
     );
   }
 
+  String calculateDifferenceInMinutes(String utcDate) {
+    // Parse the UTC date string
+    DateTime dateTime = DateTime.parse(utcDate).toLocal();
+    DateTime currentTime = DateTime.now();
+    Duration difference = currentTime.difference(dateTime);
+    int minutesDifference = difference.inMinutes;
+    // Apply the specified conditions
+    if (minutesDifference <= 45) {
+      return minutesDifference.toString();
+    } else if (minutesDifference <= 49) {
+      return "45+${minutesDifference - 45}";
+    } else if (minutesDifference < 64) {
+      return 'P';
+    } else if (minutesDifference <= 109) {
+      return (minutesDifference - 19).toString();
+    } else {
+      return "90+${minutesDifference - 109}";
+    }
+  }
+
   List<String> getDateTime(String utcDate) {
-    DateTime parsedDateTime =
-        DateTime.parse(utcDate).toLocal(); // Convert UTC to local time
+    DateTime parsedDateTime = DateTime.parse(utcDate).toLocal(); // Convert UTC to local time
     DateTime now = DateTime.now().toLocal();
     DateTime today = DateTime(now.year, now.month, now.day);
 
     // Format date to "dd MMM"
-    String formattedDate =
-        (DateTime(parsedDateTime.year, parsedDateTime.month, parsedDateTime.day)
-                .isAfter(today))
-            ? DateFormat('dd MMM').format(parsedDateTime)
-            : 'TODAY';
+    String formattedDate = (DateTime(parsedDateTime.year, parsedDateTime.month, parsedDateTime.day).isAfter(today))
+        ? DateFormat('dd MMM').format(parsedDateTime)
+        : 'TODAY';
 
     // Format time to "HH:mm"
     String formattedTime = DateFormat('HH:mm').format(parsedDateTime);
@@ -198,12 +208,12 @@ class MatchTile extends StatelessWidget {
           );
   }
 
-  TextStyle textStyle(double size, FontWeight weight) {
-    return TextStyle(
-      color: const Color(0xFF23262D),
-      fontSize: size,
-      fontFamily: 'Inter',
-      fontWeight: weight,
-    );
+  TextStyle textStyle(double size, FontWeight weight){
+      return TextStyle(
+        color: const Color(0xFF23262D),
+        fontSize: size,
+        fontFamily: 'Inter',
+        fontWeight: weight,
+      );
   }
 }
