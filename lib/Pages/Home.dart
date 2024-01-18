@@ -11,6 +11,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late List<CompetitionModel> _competitions = [];
+  List<CompetitionModel> _filteredCompetitions = [];
+
   List<Map<String, String>> staticNews = [
     {
       'news': 'Manchester United \'extremely close\' to signing Darwin Nunez',
@@ -41,8 +43,22 @@ class _HomePageState extends State<HomePage> {
   void _getData() async {
     final List<CompetitionModel> competitions =
         (await ApiService().getCompetitions())!;
+    final String userCountry = (await ApiService().getUserCountry())!;
+
     setState(() {
+      // Sort competitions putting the user's country's competition first
+      competitions.sort((a, b) {
+        if (a.area.name == userCountry) {
+          return -1;
+        } else if (b.area.name == userCountry) {
+          return 1;
+        } else {
+          return a.name.compareTo(b.name);
+        }
+      });
+
       _competitions = competitions;
+      _filteredCompetitions = competitions;
     });
   }
 
@@ -74,7 +90,14 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               SizedBox(height: 10),
-              SearchBar(),
+              SearchBar(
+                competitions: _competitions,
+                onSearch: (filteredCompetitions) {
+                  setState(() {
+                    _filteredCompetitions = filteredCompetitions;
+                  });
+                },
+              ),
               SizedBox(height: 20),
               Text(
                 'Leagues',
@@ -89,28 +112,8 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 10),
               Container(
-                height: 180,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _competitions
-                      .where((comp) => comp.emblem.isNotEmpty)
-                      .length,
-                  itemBuilder: (context, index) {
-                    final filteredCompetitions = _competitions
-                        .where((comp) => comp.emblem.isNotEmpty)
-                        .toList();
-                    return Container(
-                      width: 200,
-                      height: 30,
-                      margin: EdgeInsets.symmetric(horizontal: 8),
-                      child: LeagueCard(
-                        competition: filteredCompetitions[index],
-                        cardWidth: 170,
-                        cardHeight: 10,
-                      ),
-                    );
-                  },
-                ),
+                height: 140,
+                child: LeagueList(competitions: _filteredCompetitions),
               ),
               SizedBox(height: 20),
               Text(
@@ -139,6 +142,41 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class LeagueList extends StatefulWidget {
+  final List<CompetitionModel> competitions;
+
+  const LeagueList({Key? key, required this.competitions}) : super(key: key);
+
+  @override
+  _LeagueListState createState() => _LeagueListState();
+}
+
+class _LeagueListState extends State<LeagueList> {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount:
+          widget.competitions.where((comp) => comp.emblem.isNotEmpty).length,
+      itemBuilder: (context, index) {
+        final filteredCompetitions = widget.competitions
+            .where((comp) => comp.emblem.isNotEmpty)
+            .toList();
+        return Container(
+          width: 140,
+          height: 10,
+          margin: EdgeInsets.symmetric(horizontal: 8),
+          child: LeagueCard(
+            competition: filteredCompetitions[index],
+            cardWidth: 140,
+            cardHeight: 50,
+          ),
+        );
+      },
     );
   }
 }
@@ -181,7 +219,12 @@ class LeagueCard extends StatelessWidget {
 }
 
 class SearchBar extends StatelessWidget {
-  const SearchBar({Key? key}) : super(key: key);
+  final Function(List<CompetitionModel>) onSearch;
+  final List<CompetitionModel> competitions;
+
+  const SearchBar(
+      {Key? key, required this.onSearch, required this.competitions})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -205,6 +248,12 @@ class SearchBar extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: TextField(
+              onChanged: (value) {
+                onSearch(competitions
+                    .where((comp) =>
+                        comp.name.toLowerCase().contains(value.toLowerCase()))
+                    .toList());
+              },
               style: TextStyle(
                 color: Color.fromRGBO(147, 149, 152, 1),
                 fontFamily: 'Inter',
