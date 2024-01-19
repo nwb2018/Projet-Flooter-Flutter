@@ -19,51 +19,52 @@ class _MatchPageState extends State<MatchPage> {
   }
 
   void _getData() async {
-    _matches = await ApiService().getCompetitionMatches("2003", 1) ?? [];
+    _matches = await ApiService().getMatches(
+  competitionIds: ['2015', '2021', '2019', '2017'],
+  dateFrom: '2022-05-17',
+  dateTo: '2022-05-21',
+);
     setState(() {});
   }
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('Football Matches'),
+    ),
+    body: _matches == null || _matches!.isEmpty
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : ListView.builder(
+            itemCount: _matches!.length,
+            itemBuilder: (context, index) {
+              Match match = _matches![index];
+              String homeTeamName =
+                  match.homeTeam?.name ?? 'Unknown Home Team';
+              String awayTeamName =
+                  match.awayTeam?.name ?? 'Unknown Away Team';
+              String matchDate = match.utcDate.toString() ??
+                  'Unknown Date'; // Utilisation de la date UTC
+              // String leagueName = match.competition?.name ?? 'Unknown League';
+              String scoreText = '${match.score?.homeTeamScore ?? 0} - ${match.score?.awayTeamScore ?? 0}';
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('REST API Example'),
-      ),
-      body: _matches == null || _matches!.isEmpty
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : ListView.builder(
-              itemCount: _matches!.length,
-              itemBuilder: (context, index) {
-                // Access specific properties of the Match class
-                Match match = _matches![index];
-                String homeTeamName =
-                    match.homeTeam?.name ?? 'Unknown Home Team';
-                String awayTeamName =
-                    match.awayTeam?.name ?? 'Unknown Away Team';
-                String score = '1 - 0';
-
-                return Card(
-                  child: Column(
+              return Card(
+                child: ListTile(
+                  title: Text('$homeTeamName vs $awayTeamName'),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text('Home Team: $homeTeamName'),
-                          Text('Away Team: $awayTeamName'),
-                          Text('Score: $score'),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      // Additional widgets or information you want to display
+                      // Text('League: $leagueName'),
+                      Text('Date: $matchDate'),
+                      Text('Score: $scoreText'),
                     ],
                   ),
-                );
-              },
-            ),
-    );
-  }
+                ),
+              );
+            },
+          ),
+  );
+}
+
 }

@@ -1,8 +1,8 @@
 class Score {
-  String winner;
-  String duration;
-  int homeTeamScore;
-  int awayTeamScore;
+   String winner;
+   String duration;
+   int homeTeamScore;
+   int awayTeamScore;
 
   Score({
     required this.winner,

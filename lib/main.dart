@@ -1,9 +1,9 @@
 import 'package:flooter/Pages/Home.dart';
-import 'package:flooter/Pages/LeaguePage.dart';
 import 'package:flooter/Pages/Match_competition.dart';
 import 'package:flooter/Pages/Schedule.dart';
 import 'package:flooter/Pages/Standing_competition.dart';
 import 'package:flooter/Splash/splash_screen.dart';
+import 'package:flooter/pages/Favoris.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,31 +17,32 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
+  static final ValueNotifier<ThemeMode> themeNotifier =
+      ValueNotifier(ThemeMode.light);
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ECLUBS',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      initialRoute: '/',
-      routes: {
-
-        //  '/': (context) => SplashScreen(),
-        // '/': (context) => const MyHomePage(title: 'ECLUBS'),
-        // '/': (context) => const MatchPage(),
-        //'/': (context) => const StandingPage(),
-        '/': (context) => const LeaguePage(),
-
-        '/schedule': (context) => const Schedule(),
-      },
-
-      //route aux leagues
-       // '/': (context) => const league(title: 'LEAGUES'),
-      //fin league
-    );
+    return ValueListenableBuilder<ThemeMode>(
+        valueListenable: themeNotifier,
+        builder: (_, ThemeMode currentMode, __) {
+          return MaterialApp(
+            title: 'ECLUBS',
+            theme: ThemeData(primarySwatch: Colors.amber),
+            darkTheme: ThemeData.dark(),
+            themeMode: currentMode,
+            initialRoute: '/splash',
+            debugShowCheckedModeBanner:
+                false, // Set this to false to remove the debug banner
+            routes: {
+              '/home': (context) => const MyHomePage(
+                    title: "salem",
+                  ),
+              '/splash': (context) => SplashScreen(),
+              '/schedule': (context) => const Schedule(),
+              '/match': (context) => const MatchPage(),
+              '/standing': (context) => const StandingPage(),
+            },
+          );
+        });
   }
 }
 
@@ -63,9 +64,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   final List<Widget> _screens = [
-    Home(),
+    HomePage(),
     Schedule(),
-    MatchPage()
+    FavoritePage()
     // Add other pages here as needed
   ];
 
@@ -78,6 +79,21 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('3ILFoot.com'),
+        actions: [
+          IconButton(
+              icon: Icon(MyApp.themeNotifier.value == ThemeMode.light
+                  ? Icons.dark_mode
+                  : Icons.light_mode),
+              onPressed: () {
+                MyApp.themeNotifier.value =
+                    MyApp.themeNotifier.value == ThemeMode.light
+                        ? ThemeMode.dark
+                        : ThemeMode.light;
+              })
+        ],
+      ),
       body: PageView(
         controller: _pageController,
         children: _screens,
@@ -130,6 +146,16 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             label: "Schedule",
+          ),
+          BottomNavigationBarItem(
+            icon: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Icon(
+                Icons.star,
+                size: 25,
+              ),
+            ),
+            label: "Favorites",
           ),
         ],
       ),
