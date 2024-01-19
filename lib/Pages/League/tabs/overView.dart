@@ -19,8 +19,8 @@ class _OverViewState extends State<OverView> {
   }
 
   void _getData() async {
-    _matches = (await ApiService().getCompetitionMatches("2003", 1) ?? [])
-        .cast<Match>();
+    _matches = await ApiService().getCompetitionMatches("2003", 1) ?? [];
+    print(_matches);
     setState(() {});
   }
 
@@ -60,7 +60,11 @@ class _OverViewState extends State<OverView> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
+              child: _matches!.length == 0
+              ? Center(
+                child: CircularProgressIndicator(),
+              ):
+              ListView.builder(
                 itemCount: showMoreClicked
                     ? _matches!.length
                     : initialDataCount, //+ dataToAdd,
@@ -71,6 +75,12 @@ class _OverViewState extends State<OverView> {
                       match.homeTeam?.name ?? 'Unknown Home Team';
                   String awayTeamName =
                       match.awayTeam?.name ?? 'Unknown Away Team';
+                  String homeTeamScore =
+                      match.score?.homeTeamScore.toString() ?? 'Unknown home Team score';
+                  String matchTeamDuration =
+                      match.matchday?.toString() ?? 'Unknown match duration';
+                  String awayTeamScore =
+                      match.score?.awayTeamScore.toString() ?? 'Unknown Away Team score';
 
                   return Container(
                     color: Colors.white,
@@ -91,7 +101,7 @@ class _OverViewState extends State<OverView> {
                                   ),
                                 ),
                                 SizedBox(width: 4.0),
-                                Text(match.score.homeTeamScore.toString()),
+                                Text(homeTeamScore),
                               ],
                             ),
                           ),
@@ -101,7 +111,7 @@ class _OverViewState extends State<OverView> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    match.matchday.toString(),
+                                    matchTeamDuration,
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.center,
                                   ),
@@ -123,7 +133,7 @@ class _OverViewState extends State<OverView> {
                                   ),
                                 ),
                                 SizedBox(width: 4.0),
-                                Text(match.score.awayTeamScore.toString()),
+                                Text(awayTeamScore),
                               ],
                             ),
                           ),

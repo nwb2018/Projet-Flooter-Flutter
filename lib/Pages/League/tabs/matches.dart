@@ -19,7 +19,8 @@ class _MatchesState extends State<matches> {
   }
 
   void _getData() async {
-    _matches = (await ApiService().getCompetitionMatches("2003", 1) ?? []).cast<Match>();
+    _matches = await ApiService().getCompetitionMatches("2003", 1);
+    print(_matches);
     setState(() {});
   }
 
