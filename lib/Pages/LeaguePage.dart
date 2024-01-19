@@ -1,12 +1,17 @@
 import 'package:flooter/Pages/League/tabs/matches.dart';
 import 'package:flooter/Pages/League/tabs/standings.dart';
-import 'package:flooter/Pages/League/tabs/OverView.dart';
+import 'package:flooter/Pages/League/tabs/overview.dart';
 import 'package:flutter/material.dart';
+import 'package:flooter/models/match_model.dart';
+
+import '../Services/api_service.dart';
+import '../models/table_model.dart';
 
 
 
 
 class LeaguePage extends StatefulWidget {
+  // add required field competition
   const LeaguePage({super.key});
 
   @override
@@ -14,6 +19,35 @@ class LeaguePage extends StatefulWidget {
 }
 
 class _LeaguePageState extends State<LeaguePage> {
+  List<Match>? _matches = [];
+  List<TableItem>? _standings = [];
+
+  String formatDateTime(DateTime dateTime) {
+    String year = dateTime.year.toString().padLeft(4, '0');
+    String month = dateTime.month.toString().padLeft(2, '0');
+    String day = dateTime.day.toString().padLeft(2, '0');
+    return '$year-$month-$day';
+  }
+
+  void _getData() async {
+    DateTime dateFrom = DateTime.now().subtract(const Duration(days: 9, hours: 12));
+    DateTime dateTo = DateTime.now().add(const Duration(hours: 12));
+    // pass competition Id
+    _matches = await ApiService().getMatches(competitionIds: ["2003"], dateFrom: formatDateTime(dateFrom), dateTo: formatDateTime(dateTo));
+    print(_matches);
+    ApiService apiService = ApiService();
+    // pass competition code
+    _standings = await apiService.getCompetitionStandings("PL") ?? [];
+    print(_standings);
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -57,7 +91,7 @@ class _LeaguePageState extends State<LeaguePage> {
               padding: EdgeInsets.all(16.0),
               child: TabBar(
                   tabs: [
-                    Tab(text: 'OverView',),
+                    Tab(text: 'Overview',),
                     Tab(text: 'Matches',),
                     Tab(text: 'Standings',)
                   ]
@@ -70,13 +104,19 @@ class _LeaguePageState extends State<LeaguePage> {
                   children: [
 
                     //overView
-                    OverView(),
+                    _standings!.isEmpty || _matches!.isEmpty
+                    ? const Center(child: CircularProgressIndicator(),)
+                    : Overview(standings: _standings!, matches: _matches!,),
 
                     //matches
-                    matches(),
+                    _matches!.isEmpty
+                    ? const Center(child: CircularProgressIndicator(),)
+                    : Matches(matches: _matches!, isExpanded: true),
 
                     //standings
-                    Standings(showHeading: false,),
+                    _standings!.isEmpty
+                    ? const Center(child: CircularProgressIndicator(),)
+                    : Standings(standings: _standings!, isExpanded: true,),
                   ]
               ),
             )

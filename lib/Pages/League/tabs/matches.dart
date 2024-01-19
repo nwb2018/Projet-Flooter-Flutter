@@ -1,38 +1,35 @@
+import 'package:flooter/Pages/Schedule/widgets/match_tile.dart';
 import 'package:flooter/Services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flooter/models/match_model.dart';
 
 
-class matches extends StatefulWidget {
+class Matches extends StatefulWidget {
+  const Matches({super.key, required this.matches, required this.isExpanded});
+  final List<Match> matches;
+  final bool isExpanded;
+  
   @override
-  _MatchesState createState() => _MatchesState();
+  State<Matches> createState() => _MatchesState();
 }
 
-class _MatchesState extends State<matches> {
-  List<Match>? _matches = [];
+class _MatchesState extends State<Matches> {
+  List<int> _matchdays = [];
+
+  int summaryLength(int length){
+    return length>3 ? 3 : length>1 ? length/2 as int : length;
+  }
+
+  // Indicateur pour vérifier si le bouton "Afficher plus" a été cliqué
+  late bool showMoreClicked;
 
   @override
   void initState() {
+    _matchdays = widget.matches.map((match) => match.matchday).toSet().toList().reversed.toList();
+    showMoreClicked = widget.isExpanded;
     super.initState();
-    _getData();
   }
-
-  void _getData() async {
-    _matches = await ApiService().getCompetitionMatches("2003", 1);
-    print(_matches);
-    setState(() {});
-  }
-
-
-  // Nombre initial de données à afficher
-  int initialDataCount = 4;
-
-  // Nombre de données à ajouter à chaque clic sur "Afficher plus"
-  int dataToAdd = 5;
-
-  // Indicateur pour vérifier si le bouton "Afficher plus" a été cliqué
-  bool showMoreClicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,77 +40,38 @@ class _MatchesState extends State<matches> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
+            Flexible(
+              fit: FlexFit.loose,
               child: ListView.builder(
-                itemCount: showMoreClicked ? _matches!.length : initialDataCount + dataToAdd,
+                shrinkWrap: true,
+                itemCount: showMoreClicked ? _matchdays.length : 1,// showMoreClicked ? widget.matches!.length : summaryLength(widget.matches!.length),
                 itemBuilder: (context, index) {
-                  // Remplacez le contenu par les données réelles de votre modèle de match
-                  Match match = _matches![index];
-                  String homeTeamName =
-                      match.homeTeam?.name ?? 'Unknown Home Team';
-                  String awayTeamName =
-                      match.awayTeam?.name ?? 'Unknown Away Team';
+                  List<Match> filteredMatches = widget.matches.where((match) {
+                    return match.matchday == _matchdays[index];
+                  }).toList();
 
-                  return Container(
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          ListTile(
-                            title: Row(
-                              children: [
-                                SizedBox(width: 4.0),
-                                crestImage(match.homeTeam.crest),
-                                Expanded(
-                                  child: Text(
-                                    homeTeamName.toString(),
-                                    overflow: TextOverflow.ellipsis, //si le texte est trop long pour tenir dans la zone spécifiée, il sera coupé et remplacé par des points de suspension
-                                  ),
-                                ),
-                                SizedBox(width: 4.0),
-                                Text(match.score.homeTeamScore.toString()),
-                              ],
-                            ),
+                  return Column(
+                    children: [
+                      Text(
+                          "Week ${_matchdays[index]}",
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w600,
                           ),
-                          SizedBox(height: 4.0),
-                          ListTile(
-                            title: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    match.matchday.toString(),
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 4.0),
-                          ListTile(
-                            title: Row(
-                              children: [
-                                SizedBox(width: 4.0),
-                                crestImage(match.awayTeam.crest),
-                                SizedBox(width: 8.0),
-                                Expanded(
-                                  child: Text(
-                                    awayTeamName.toString(),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                SizedBox(width: 4.0),
-                                Text(match.score.awayTeamScore.toString()),
-                              ],
-                            ),
-                          ),
-                          Divider(height: 4.0,),
-                        ],
                       ),
-                    ),
+                      const SizedBox(height: 2,),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children : List.generate(
+                          showMoreClicked? filteredMatches.length : summaryLength(filteredMatches.length),
+                              (index) => MatchTile(match: filteredMatches[index]),
+                        ),
+                      ),
+                      const SizedBox(height: 5,),
+                    ],
                   );
-                },
+
+                }
               ),
             ),
             // Afficher le bouton "Afficher plus" en dehors de la boucle

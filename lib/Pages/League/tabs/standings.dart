@@ -5,26 +5,26 @@ import 'package:flooter/models/table_model.dart';
 import 'package:flooter/services/api_service.dart';
 
 class Standings extends StatefulWidget {
-  const Standings({super.key, required, required this.showHeading});
-  final bool showHeading;
+  const Standings({super.key, required, required this.standings, required this.isExpanded});
+  final bool isExpanded;
+  final List<TableItem> standings;
+  
   @override
   State<Standings> createState() => _StandingsState();
 }
 
 class _StandingsState extends State<Standings> {
-  List<TableItem>? _standings = [];
+  // Indicateur pour vérifier si le bouton "Afficher plus" a été cliqué
+  late bool showMoreClicked;
+
+  int summaryLength(int length){
+    return length>3 ? 3 : length>1 ? length/2 as int : length;
+  }
 
   @override
   void initState() {
+    showMoreClicked = widget.isExpanded;
     super.initState();
-    _getData();
-  }
-
-  void _getData() async {
-    ApiService apiService = ApiService();
-    _standings = await apiService.getCompetitionStandings("PL") ?? [];
-    print(_standings);
-    setState(() {});
   }
 
   @override
@@ -36,7 +36,7 @@ class _StandingsState extends State<Standings> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          widget.showHeading
+          !widget.isExpanded
           ? Text(
               'Standings',
               style: customTextStyle(14, FontWeight.w700),
@@ -111,33 +111,30 @@ class _StandingsState extends State<Standings> {
                     fit: FlexFit.loose,
                     child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: _standings!.length,
+                        itemCount: showMoreClicked ? widget.standings!.length : summaryLength(widget.standings!.length),
                         itemBuilder: (context, index) {
-                          return TeamTile(standing: _standings![index]);
+                          return TeamTile(standing: widget.standings![index]);
                         }
                     ),
                   ),
-
-                  const SizedBox(height: 1),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 30,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                                'See All',
-                                style: customTextStyle(12, FontWeight.w400)
-                            ),
-                            const SizedBox(width: 4),
-                            const Icon(Icons.chevron_right,),
-                          ],
+                  if (!showMoreClicked)
+                    InkWell(
+                      onTap: () {
+                        // Lorsqu'on clique sur le bouton "Afficher plus", augmenter le nombre de données à afficher
+                        setState(() {
+                          showMoreClicked = true;
+                        });
+                      },
+                      child: Container(
+                        height: 50, // Hauteur du bouton "Afficher plus"
+                        child: Center(
+                          child: Text(
+                            "Afficher plus",
+                            style: TextStyle(color: Colors.blue),
+                          ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
                 ],
               ),
             ),
