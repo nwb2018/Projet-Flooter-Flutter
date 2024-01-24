@@ -21,8 +21,8 @@ class _FavoritePageState extends State<FavoritePage> {
   void _getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int preferredTeamId =
-        prefs.getInt('preferredTeamId') ?? 5; // Default to 5 if not found
-
+        prefs.getInt('preferredTeamId') ?? 5; // Default to 5 if not foundp
+    print(preferredTeamId);
     _matches = await ApiService().getMatchesByTeam(preferredTeamId);
     setState(() {});
   }

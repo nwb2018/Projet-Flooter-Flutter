@@ -1,13 +1,16 @@
 import 'package:flooter/Pages/Home.dart';
+import 'package:flooter/Pages/LeaguePage.dart';
 import 'package:flooter/Pages/Match_competition.dart';
 import 'package:flooter/Pages/Schedule.dart';
-import 'package:flooter/Pages/Standing_competition.dart';
+import 'package:flooter/Pages/Favoris.dart';
+import 'package:flooter/Services/sharedPreferencesService.dart';
 import 'package:flooter/Splash/splash_screen.dart';
-import 'package:flooter/pages/Favoris.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SharedPreferencesService.initPreferences();
   runApp(
     const ProviderScope(
       child: MyApp(),
@@ -19,30 +22,32 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   static final ValueNotifier<ThemeMode> themeNotifier =
       ValueNotifier(ThemeMode.light);
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ThemeMode>(
-        valueListenable: themeNotifier,
-        builder: (_, ThemeMode currentMode, __) {
-          return MaterialApp(
-            title: 'ECLUBS',
-            theme: ThemeData(primarySwatch: Colors.amber),
-            darkTheme: ThemeData.dark(),
-            themeMode: currentMode,
-            initialRoute: '/splash',
-            debugShowCheckedModeBanner:
-                false, // Set this to false to remove the debug banner
-            routes: {
-              '/home': (context) => const MyHomePage(
-                    title: "salem",
-                  ),
-              '/splash': (context) => SplashScreen(),
-              '/schedule': (context) => const Schedule(),
-              '/match': (context) => const MatchPage(),
-              '/standing': (context) => const StandingPage(),
-            },
-          );
-        });
+      valueListenable: themeNotifier,
+      builder: (_, ThemeMode currentMode, __) {
+        return MaterialApp(
+          title: 'ECLUBS',
+          theme: ThemeData(primarySwatch: Colors.amber),
+          darkTheme: ThemeData.dark(),
+          themeMode: currentMode,
+          initialRoute: '/splash',
+          debugShowCheckedModeBanner: false,
+          routes: {
+            '/home': (context) => const MyHomePage(title: "salem"),
+            '/splash': (context) => SplashScreen(),
+            '/schedule': (context) => const Schedule(),
+            '/match': (context) => const MatchPage(),
+            '/standing': (context) => const LeaguePage(
+                  competitionId: 0,
+                  competitionCode: '',
+                ),
+          },
+        );
+      },
+    );
   }
 }
 
@@ -66,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _screens = [
     HomePage(),
     Schedule(),
-    FavoritePage()
+    FavoritePage(),
     // Add other pages here as needed
   ];
 
@@ -83,15 +88,16 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('3ILFoot.com'),
         actions: [
           IconButton(
-              icon: Icon(MyApp.themeNotifier.value == ThemeMode.light
-                  ? Icons.dark_mode
-                  : Icons.light_mode),
-              onPressed: () {
-                MyApp.themeNotifier.value =
-                    MyApp.themeNotifier.value == ThemeMode.light
-                        ? ThemeMode.dark
-                        : ThemeMode.light;
-              })
+            icon: Icon(MyApp.themeNotifier.value == ThemeMode.light
+                ? Icons.dark_mode
+                : Icons.light_mode),
+            onPressed: () {
+              MyApp.themeNotifier.value =
+                  MyApp.themeNotifier.value == ThemeMode.light
+                      ? ThemeMode.dark
+                      : ThemeMode.light;
+            },
+          )
         ],
       ),
       body: PageView(

@@ -2,23 +2,23 @@ import 'package:flooter/Pages/League/tabs/Standing/custom_widgets.dart';
 import 'package:flooter/Pages/League/tabs/Standing/team_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flooter/models/table_model.dart';
-import 'package:flooter/services/api_service.dart';
 
 class Standings extends StatefulWidget {
-  const Standings({super.key, required, required this.standings, required this.isExpanded});
+  const Standings({Key? key, required this.standings, required this.isExpanded})
+      : super(key: key);
+
   final bool isExpanded;
   final List<TableItem> standings;
-  
+
   @override
   State<Standings> createState() => _StandingsState();
 }
 
 class _StandingsState extends State<Standings> {
-  // Indicateur pour vérifier si le bouton "Afficher plus" a été cliqué
   late bool showMoreClicked;
 
-  int summaryLength(int length){
-    return length>3 ? 3 : length>1 ? length/2 as int : length;
+  int summaryLength(int length) {
+    return length > 3 ? 3 : length > 1 ? length ~/ 2 : length;
   }
 
   @override
@@ -29,22 +29,21 @@ class _StandingsState extends State<Standings> {
 
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          !widget.isExpanded
-          ? Text(
-              'Standings',
-              style: customTextStyle(14, FontWeight.w700),
-            )
-          : const Center( child: null),
-          const SizedBox(height: 18),
-          Expanded(
-            child: Container(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            !widget.isExpanded
+                ? Text(
+                    'Standings',
+                    style: customTextStyle(14, FontWeight.w700),
+                  )
+                : const Center(child: null),
+            const SizedBox(height: 18),
+            Container(
               clipBehavior: Clip.antiAlias,
               decoration: ShapeDecoration(
                 color: Colors.white,
@@ -72,6 +71,15 @@ class _StandingsState extends State<Standings> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              SizedBox(
+                                width: 28,
+                                child: Text(
+                                    '',
+                                    textAlign: TextAlign.center,
+                                    style: customTextStyle(12, FontWeight.w400)
+                                ),
+                              ),
+                              const SizedBox(width: 14),
                               SizedBox(
                                 width: 20,
                                 child: Text(
@@ -110,23 +118,24 @@ class _StandingsState extends State<Standings> {
                   Flexible(
                     fit: FlexFit.loose,
                     child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: showMoreClicked ? widget.standings!.length : summaryLength(widget.standings!.length),
-                        itemBuilder: (context, index) {
-                          return TeamTile(standing: widget.standings![index]);
-                        }
+                      shrinkWrap: true,
+                      itemCount: showMoreClicked
+                          ? widget.standings.length
+                          : summaryLength(widget.standings.length),
+                      itemBuilder: (context, index) {
+                        return TeamTile(standing: widget.standings[index]);
+                      },
                     ),
                   ),
                   if (!showMoreClicked)
                     InkWell(
                       onTap: () {
-                        // Lorsqu'on clique sur le bouton "Afficher plus", augmenter le nombre de données à afficher
                         setState(() {
                           showMoreClicked = true;
                         });
                       },
                       child: Container(
-                        height: 50, // Hauteur du bouton "Afficher plus"
+                        height: 50,
                         child: Center(
                           child: Text(
                             "Afficher plus",
@@ -138,10 +147,9 @@ class _StandingsState extends State<Standings> {
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
-
   }
 }

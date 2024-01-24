@@ -1,18 +1,20 @@
+import 'package:flutter/material.dart';
 import 'package:flooter/Pages/League/tabs/matches.dart';
 import 'package:flooter/Pages/League/tabs/standings.dart';
 import 'package:flooter/Pages/League/tabs/overview.dart';
-import 'package:flutter/material.dart';
 import 'package:flooter/models/match_model.dart';
-
 import '../Services/api_service.dart';
 import '../models/table_model.dart';
 
-
-
-
 class LeaguePage extends StatefulWidget {
-  // add required field competition
-  const LeaguePage({super.key});
+  final int competitionId;
+  final String competitionCode;
+
+  const LeaguePage({
+    required this.competitionId,
+    required this.competitionCode,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<LeaguePage> createState() => _LeaguePageState();
@@ -29,23 +31,26 @@ class _LeaguePageState extends State<LeaguePage> {
     return '$year-$month-$day';
   }
 
-  void _getData() async {
-    DateTime dateFrom = DateTime.now().subtract(const Duration(days: 9, hours: 12));
-    DateTime dateTo = DateTime.now().add(const Duration(hours: 12));
-    // pass competition Id
-    _matches = await ApiService().getMatches(competitionIds: ["2003"], dateFrom: formatDateTime(dateFrom), dateTo: formatDateTime(dateTo));
-    print(_matches);
-    ApiService apiService = ApiService();
-    // pass competition code
-    _standings = await apiService.getCompetitionStandings("PL") ?? [];
-    print(_standings);
-    setState(() {});
-  }
-
   @override
   void initState() {
     super.initState();
     _getData();
+  }
+
+  void _getData() async {
+    DateTime dateFrom = DateTime.now().subtract(const Duration(days: 9, hours: 12));
+    DateTime dateTo = DateTime.now().add(const Duration(hours: 12));
+
+    _matches = await ApiService().getMatches(
+      competitionIds: [widget.competitionId.toString()],
+      dateFrom: formatDateTime(dateFrom),
+      dateTo: formatDateTime(dateTo),
+    );
+
+    ApiService apiService = ApiService();
+    _standings = await apiService.getCompetitionStandings(widget.competitionCode) ?? [];
+
+    setState(() {});
   }
 
   @override
@@ -54,28 +59,55 @@ class _LeaguePageState extends State<LeaguePage> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Padding(
+          title: Padding(
             padding: EdgeInsets.all(16.0),
             child: SizedBox(
               child: Row(
                 children: [
                   Column(
                     children: [
-                      Text('Logo'),
+                      if (_matches?.isNotEmpty == true &&
+                          _matches![0].competitionEmblem.isNotEmpty)
+                        Image.network(
+                          _matches![0].competitionEmblem,
+                          width: 50,
+                          height: 50,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            } else {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                          },
+                        )
+                      else
+                        Center(
+                          child: CircularProgressIndicator(),
+                        ),
                     ],
                   ),
                   SizedBox(width: 20),
                   Column(
                     children: [
-                      //const Text('LEAGUE'),
+                      if (_matches?.isNotEmpty == true)
+                        Row(
+                          children: [
+                            Text('LEAGUE', style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      if (_matches?.isNotEmpty == true)
+                        Row(
+                          children: [
+                            Text(_matches![0].competitionName, style: TextStyle(fontSize: 15)),
+                          ],
+                        ),
                       Row(
-                        children: [Text('LEAGUE', style: TextStyle(fontWeight: FontWeight.bold)),],
-                      ),
-                      Row(
-                        children: [Text('England',style: TextStyle(fontSize: 15),),],
-                      ),
-                      Row(
-                        children: [Text('2021/2022', style: TextStyle(fontSize: 10),)],
+                        children: [
+                          Text('2021/2022', style: TextStyle(fontSize: 10)),
+                        ],
                       )
                     ],
                   ),
@@ -86,38 +118,58 @@ class _LeaguePageState extends State<LeaguePage> {
         ),
         body: Column(
           children: [
-            const Divider(height: 25,), // Séparateur bas du logo (bar)
+            const Divider(height: 25,), // Separator below the logo (bar)
             const Padding(
               padding: EdgeInsets.all(16.0),
               child: TabBar(
-                  tabs: [
-                    Tab(text: 'Overview',),
-                    Tab(text: 'Matches',),
-                    Tab(text: 'Standings',)
-                  ]
+                tabs: [
+                  Tab(
+                    text: 'Overview',
+                  ),
+                  Tab(
+                    text: 'Matches',
+                  ),
+                  Tab(
+                    text: 'Standings',
+                  )
+                ],
               ),
             ),
 
-            //afficher contenu des tabs
+            // Display content of the tabs
             Expanded(
               child: TabBarView(
-                  children: [
+                children: [
+                  // Overview
+                  _standings!.isEmpty || _matches!.isEmpty
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Overview(
+                          standings: _standings!,
+                          matches: _matches!,
+                        ),
 
-                    //overView
-                    _standings!.isEmpty || _matches!.isEmpty
-                    ? const Center(child: CircularProgressIndicator(),)
-                    : Overview(standings: _standings!, matches: _matches!,),
+                  // Matches
+                  _matches!.isEmpty
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Matches(
+                          matches: _matches!,
+                          isExpanded: true,
+                        ),
 
-                    //matches
-                    _matches!.isEmpty
-                    ? const Center(child: CircularProgressIndicator(),)
-                    : Matches(matches: _matches!, isExpanded: true),
-
-                    //standings
-                    _standings!.isEmpty
-                    ? const Center(child: CircularProgressIndicator(),)
-                    : Standings(standings: _standings!, isExpanded: true,),
-                  ]
+                  // Standings
+                  _standings!.isEmpty
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Standings(
+                          standings: _standings!,
+                          isExpanded: true,
+                        ),
+                ],
               ),
             )
           ],

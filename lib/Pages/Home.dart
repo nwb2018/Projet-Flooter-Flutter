@@ -1,3 +1,4 @@
+import 'package:flooter/Pages/LeaguePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flooter/Services/api_service.dart';
 import 'package:flooter/models/competition_model.dart';
@@ -58,7 +59,7 @@ class _HomePageState extends State<HomePage> {
       });
 
       _competitions = competitions;
-       _filteredCompetitions = competitions;
+      _filteredCompetitions = competitions;
     });
   }
 
@@ -199,22 +200,38 @@ class LeagueCard extends StatelessWidget {
       return SizedBox.shrink();
     }
 
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: BorderSide(color: Colors.white),
-      ),
-      child: Container(
-        color: Colors.white,
-        width: cardWidth,
-        height: cardHeight,
-        child: Image.network(
-          competition.emblem,
-          fit: BoxFit.contain,
-        ),
-      ),
-    );
+    return MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: () {
+            // Navigate to LeaguePage with competitionId and competitionCode
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LeaguePage(
+                  competitionId: competition.id,
+                  competitionCode: competition.code,
+                ),
+              ),
+            );
+          },
+          child: Card(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: BorderSide(color: Colors.white),
+            ),
+            child: Container(
+              color: Colors.white,
+              width: cardWidth,
+              height: cardHeight,
+              child: Image.network(
+                competition.emblem,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        ));
   }
 }
 
